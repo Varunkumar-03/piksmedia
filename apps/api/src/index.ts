@@ -24,6 +24,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // DB Connection
+let connectionPromise: Promise<void> | null = null;
 const connectDB = async () => {
   try {
     let mongoUri = process.env.MONGO_URI;
@@ -53,6 +54,21 @@ const connectDB = async () => {
     console.warn('Backend server continuing in offline mode with local persistence fallback.');
   }
 };
+
+const ensureConnected = async () => {
+  if (mongoose.connection.readyState === 1) return;
+  if (!connectionPromise) {
+    connectionPromise = connectDB().finally(() => {
+      connectionPromise = null;
+    });
+  }
+  await connectionPromise;
+};
+
+app.use(async (req, res, next) => {
+  await ensureConnected();
+  next();
+});
 
 import authRoutes from './routes/auth';
 import productRoutes from './routes/product';
