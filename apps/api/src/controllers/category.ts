@@ -41,27 +41,10 @@ const writeLocalCategories = (categories: any[]) => {
 // Get all categories
 export const getCategories = async (req: Request, res: Response) => {
   try {
-    const localCategories = readLocalCategories();
-
-    if (mongoose.connection.readyState !== 1) {
-      res.json(localCategories);
-      return;
-    }
     const dbCategories = await Category.find().lean().sort({ createdAt: -1 });
-    
-    // Merge db and local categories by unique ID and name
-    const dbNames = new Set(dbCategories.map(c => (c.name || '').toLowerCase().trim()));
-    const dbIds = new Set(dbCategories.map(c => String(c._id)));
-    const merged = [...dbCategories];
-    for (const lc of localCategories) {
-      const cleanLcName = (lc.name || '').toLowerCase().trim();
-      if (!dbIds.has(String(lc._id)) && !dbNames.has(cleanLcName)) {
-        merged.push(lc);
-      }
-    }
-    res.json(merged);
-  } catch (error) {
-    res.status(200).json(readLocalCategories());
+    res.json(dbCategories);
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
   }
 };
 
@@ -70,26 +53,6 @@ export const createCategory = async (req: Request, res: Response) => {
   try {
     const { name, description, image, badge, availableSizes, sizeUnit } = req.body;
     const slug = name ? name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '') : `cat-${Date.now()}`;
-
-    const localCategories = readLocalCategories();
-    const newCategory = {
-      _id: 'cat-' + Date.now(),
-      name,
-      slug,
-      description,
-      image,
-      badge: badge || 'New',
-      availableSizes: Array.isArray(availableSizes) ? availableSizes : (typeof availableSizes === 'string' ? availableSizes.split(',').map(s=>s.trim()).filter(Boolean) : []),
-      sizeUnit: sizeUnit || 'inches(in)',
-      createdAt: new Date(),
-    };
-
-    if (mongoose.connection.readyState !== 1) {
-      localCategories.unshift(newCategory);
-      writeLocalCategories(localCategories);
-      res.status(201).json(newCategory);
-      return;
-    }
 
     const existingCategory = await Category.findOne({ $or: [{ name }, { slug }] });
     if (existingCategory) {
@@ -100,18 +63,9 @@ export const createCategory = async (req: Request, res: Response) => {
     const category = new Category({ name, slug, description, image, badge, availableSizes, sizeUnit });
     await category.save();
 
-    const createdObj = category.toObject();
-    const existingIdx = localCategories.findIndex(c => String(c._id) === String(category._id) || c.name.toLowerCase() === name.toLowerCase());
-    if (existingIdx === -1) {
-      localCategories.unshift(createdObj);
-    } else {
-      localCategories[existingIdx] = createdObj;
-    }
-    writeLocalCategories(localCategories);
-
-    res.status(201).json(createdObj);
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating category', error });
+    res.status(201).json(category);
+  } catch (error: any) {
+    res.status(500).json({ message: 'Error creating category', error: error.message });
   }
 };
 

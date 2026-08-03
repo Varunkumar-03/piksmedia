@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import User, { UserRole } from './models/User';
+import Category from './models/Category';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
 import helmet from 'helmet';
@@ -48,6 +49,21 @@ const connectDB = async () => {
         role: UserRole.SUPER_ADMIN
       });
       console.log('Seeded default admin user: admin@piksmedia.com / admin123');
+    }
+
+    // Seed default categories if none exist
+    const categoryCount = await Category.countDocuments();
+    if (categoryCount === 0) {
+      const defaultCategories = [
+        { name: 'Frames', slug: 'frames', description: 'Handcrafted Wood', image: 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=600&auto=format&fit=crop', badge: 'Popular', availableSizes: ['8x10', '11x14', '16x20'], sizeUnit: 'inches(in)' },
+        { name: 'Photo Prints', slug: 'photo-prints', description: 'Archival Quality', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=600&auto=format&fit=crop', badge: 'Giclée', availableSizes: ['8x10', '11x14'], sizeUnit: 'inches(in)' },
+        { name: 'Canvas Art', slug: 'canvas-art', description: 'Stretched Pine', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop', badge: 'Textured', availableSizes: ['16x20', '20x24', '24x36'], sizeUnit: 'inches(in)' },
+        { name: 'Hand Arts', slug: 'hand-arts', description: 'Custom Sketches', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop', badge: 'Handmade', availableSizes: ['11x14', '16x20'], sizeUnit: 'inches(in)' },
+        { name: 'Paintings', slug: 'paintings', description: 'Original Artworks', image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=600&auto=format&fit=crop', badge: 'Artisan', availableSizes: ['16x20', '24x36'], sizeUnit: 'inches(in)' },
+        { name: 'Funeral Frames', slug: 'funeral-frames', description: 'Memorial Tribute', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=600&auto=format&fit=crop', badge: 'Tribute', availableSizes: ['8x10', '11x14'], sizeUnit: 'inches(in)' }
+      ];
+      await Category.insertMany(defaultCategories);
+      console.log('Seeded default categories into MongoDB database');
     }
   } catch (error) {
     console.error('MongoDB Connection Error:', error);
