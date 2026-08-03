@@ -43,6 +43,8 @@ export default function RootLayout({
         <link rel="icon" href="/logo.png" type="image/png" sizes="any" />
         <link rel="shortcut icon" href="/logo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1c1c1c" />
       </head>
       <body className="min-h-full flex flex-col overflow-x-hidden max-w-full relative">
         <main className="flex-1">{children}</main>
@@ -50,6 +52,21 @@ export default function RootLayout({
         <AxiosSetup />
         <MascotWrapper />
         <Toaster position="bottom-right" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                    console.log('ServiceWorker registration successful with scope: ', reg.scope);
+                  }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                  });
+                });
+              }
+            `
+          }}
+        />
       </body>
     </html>
   );
