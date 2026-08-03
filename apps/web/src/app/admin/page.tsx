@@ -65,11 +65,21 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     const saved = localStorage.getItem('piks_contact_requests');
     if (saved) {
-      setContactRequests(JSON.parse(saved));
-    } else {
-      setContactRequests([]);
-      localStorage.setItem('piks_contact_requests', JSON.stringify([]));
+      try {
+        let parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Filter out dummy mock contact requests automatically
+          parsed = parsed.filter((r: any) => r && r.id !== 'CR-001' && r.id !== 'CR-002');
+          setContactRequests(parsed);
+          localStorage.setItem('piks_contact_requests', JSON.stringify(parsed));
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
     }
+    setContactRequests([]);
+    localStorage.setItem('piks_contact_requests', JSON.stringify([]));
   }, []);
   const [heroImages, setHeroImages] = useState<string[]>(Array(20).fill(''));
   const [uploadingImageIndex, setUploadingImageIndex] = useState<number | null>(null);
