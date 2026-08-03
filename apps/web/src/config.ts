@@ -17,4 +17,4 @@ axios.interceptors.response.use((response) => {
 });
 
 // Central configuration file for the frontend
-export const API_BASE_URL = '/api/v1';
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
