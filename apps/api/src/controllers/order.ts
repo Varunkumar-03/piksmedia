@@ -197,6 +197,23 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
     });
 
     const createdOrder = await order.save();
+
+    // Automatically decrement product stock count based on ordered items
+    try {
+      const Product = mongoose.model('Product');
+      for (const item of sanitizedOrderItems) {
+        if (item.product && mongoose.isValidObjectId(item.product)) {
+          const qty = parseInt(item.quantity as any, 10) || 1;
+          await Product.findByIdAndUpdate(
+            item.product,
+            { $inc: { stock: -Math.abs(qty) } }
+          );
+        }
+      }
+    } catch (stockError) {
+      console.error('Error reducing stock count on order:', stockError);
+    }
+
     res.status(201).json({ success: true, data: normalizeOrder(createdOrder) });
   } catch (error: any) {
     console.error('CREATE ORDER ERROR:', error);
