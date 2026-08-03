@@ -64,37 +64,11 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem('piks_contact_requests');
-    if (saved && saved !== '[]') {
+    if (saved) {
       setContactRequests(JSON.parse(saved));
     } else {
-      const defaultMocks = [
-        {
-          id: 'CR-001',
-          name: 'Sarah Jenkins',
-          email: 'sarah.j@example.com',
-          mobile: '+1 555-0192',
-          width: 24,
-          height: 36,
-          details: 'I need a custom oak frame with a double white mat for an oil painting. Needs to be museum glass.',
-          status: 'new',
-          date: '2026-07-22T10:30:00Z',
-          images: ['https://images.unsplash.com/photo-1544457070-4cd773b4d71e?w=500&q=80']
-        },
-        {
-          id: 'CR-002',
-          name: 'Michael Chen',
-          email: 'mchen88@example.com',
-          mobile: '+1 555-8821',
-          width: 18,
-          height: 24,
-          details: 'Looking for a simple black metal frame. Very thin profile.',
-          status: 'read',
-          date: '2026-07-21T14:15:00Z',
-          images: []
-        }
-      ];
-      setContactRequests(defaultMocks);
-      localStorage.setItem('piks_contact_requests', JSON.stringify(defaultMocks));
+      setContactRequests([]);
+      localStorage.setItem('piks_contact_requests', JSON.stringify([]));
     }
   }, []);
   const [heroImages, setHeroImages] = useState<string[]>(Array(20).fill(''));

@@ -5,18 +5,6 @@ import User, { UserRole } from '../models/User';
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    if (mongoose.connection.readyState !== 1) {
-      // Mock data for offline mode
-      res.status(200).json({
-        success: true,
-        data: [
-          { _id: 'mock-user-2', firstName: 'John', lastName: 'Doe', email: 'john@example.com', role: 'USER', createdAt: new Date() },
-          { _id: 'mock-user-3', firstName: 'Jane', lastName: 'Smith', email: 'jane@example.com', role: 'USER', createdAt: new Date() }
-        ]
-      });
-      return;
-    }
-
     const users = await User.find({ role: { $in: [UserRole.USER, UserRole.CUSTOMER] } }).select('-password').lean();
     res.status(200).json({ success: true, data: users });
   } catch (error: any) {
