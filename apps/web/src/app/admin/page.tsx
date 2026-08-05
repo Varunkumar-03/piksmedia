@@ -5182,7 +5182,7 @@ export default function AdminDashboardPage() {
                           }}
                         >
                           <img 
-                            src={viewingCustomItem.userImage} 
+                            src={viewingCustomItem.userImage.split(',')[0]} 
                             alt="User custom upload" 
                             className="w-full h-full object-fill"
                           />
@@ -5208,19 +5208,24 @@ export default function AdminDashboardPage() {
               
               <div className="space-y-6 flex-1">
                 <div>
-                  <h4 className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Original Image</h4>
-                  <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-xl border border-stone-100">
-                    <img src={viewingCustomItem.userImage} className="w-16 h-16 object-cover rounded-lg shadow-sm" alt="Original" />
-                    <a 
-                      href={viewingCustomItem.userImage} 
-                      download="custom_upload.png"
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-sm font-medium bg-stone-900 text-white px-4 py-2 rounded-lg hover:bg-stone-800 transition-colors"
-                    >
-                      Download Original
-                    </a>
-                  </div>
+                  <h4 className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Original Images ({viewingCustomItem.userImage.split(',').filter(Boolean).length})</h4>
+                  {(() => {
+                    const urls = (viewingCustomItem.userImage || '').split(',').filter(Boolean);
+                    return urls.map((url: string, index: number) => (
+                      <div key={index} className="flex items-center gap-4 bg-stone-50 p-4 rounded-xl border border-stone-100 mb-3 last:mb-0">
+                        <img src={url} className="w-16 h-16 object-cover rounded-lg shadow-sm border border-stone-200" alt={`Original ${index + 1}`} />
+                        <a 
+                          href={url} 
+                          download={`custom_upload_${index + 1}.png`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sm font-medium bg-stone-900 text-white px-4 py-2 rounded-lg hover:bg-stone-800 transition-colors"
+                        >
+                          Download Image {urls.length > 1 ? `#${index + 1}` : ''}
+                        </a>
+                      </div>
+                    ));
+                  })()}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">

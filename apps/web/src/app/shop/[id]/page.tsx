@@ -213,7 +213,9 @@ export default function ProductDetailPage() {
 
   // Customization States
   const [showCustomizeModal, setShowCustomizeModal] = useState(false);
-  const [userPhoto, setUserPhoto] = useState<string | null>(null);
+  const [userPhotos, setUserPhotos] = useState<string[]>([]);
+  const [activePhotoIndex, setActivePhotoIndex] = useState<number>(0);
+  const userPhoto = userPhotos[activePhotoIndex] || null;
   const [scaleX, setScaleX] = useState(0.5);
   const [scaleY, setScaleY] = useState(0.5);
   const [photoPosX, setPhotoPosX] = useState(50);
@@ -477,8 +479,8 @@ export default function ProductDetailPage() {
                     quantity: quantity,
                     deliveryCharges: product.deliveryCharges || 0,
                     freeShippingThreshold: product.freeShippingThreshold || 0,
-                    ...(isCustomized && userPhoto ? {
-                      userImage: userPhoto,
+                    ...(isCustomized && userPhotos.length > 0 ? {
+                      userImage: userPhotos.join(','),
                       customScaleX: scaleX,
                       customScaleY: scaleY,
                       customX: photoPosX,
@@ -1055,30 +1057,83 @@ export default function ProductDetailPage() {
               <div className="flex-1 space-y-8">
                 {/* File Upload */}
                 <div>
-                  <label className="block text-sm font-semibold text-stone-700 mb-3">Upload High-Res Photo</label>
-                  <div className="w-full p-6 border-2 border-dashed border-stone-200 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors flex items-center justify-center">
+                  <label className="block text-sm font-semibold text-stone-700 mb-3">Upload High-Res Photos (Multiple allowed)</label>
+                  <div className="w-full p-6 border-2 border-dashed border-stone-200 rounded-xl bg-stone-50 hover:bg-stone-100 transition-colors flex flex-col items-center justify-center gap-4">
                     <input 
                       type="file" 
                       accept="image/*" 
+                      multiple
                       onChange={(e) => {
-                        if (e.target.files?.[0]) {
-                          const reader = new FileReader();
-                          reader.onload = (ev) => {
-                            setUserPhoto(ev.target?.result as string);
+                        if (e.target.files && e.target.files.length > 0) {
+                          const filesArray = Array.from(e.target.files);
+                          const promises = filesArray.map(file => {
+                            return new Promise<string>((resolve) => {
+                              const reader = new FileReader();
+                              reader.onload = (ev) => {
+                                resolve(ev.target?.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            });
+                          });
+
+                          Promise.all(promises).then((newPhotos) => {
+                            setUserPhotos(prev => {
+                              const updated = [...prev, ...newPhotos];
+                              setActivePhotoIndex(updated.length - 1);
+                              return updated;
+                            });
                             // Reset controls on new upload
                             setScaleX(0.5);
                             setScaleY(0.5);
                             setPhotoPosX(50);
                             setPhotoPosY(50);
                             setIsSelected(true);
-                          };
-                          reader.readAsDataURL(e.target.files[0]);
+                          });
                         }
                       }} 
                       className="text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-medium file:bg-stone-900 file:text-white hover:file:bg-stone-800 cursor-pointer w-full max-w-[280px]" 
                     />
                   </div>
                 </div>
+
+                {/* Uploaded Photos Gallery */}
+                {userPhotos.length > 0 && (
+                  <div className="space-y-3">
+                    <label className="block text-xs font-bold uppercase tracking-wider text-stone-400">Uploaded Photos ({userPhotos.length})</label>
+                    <div className="grid grid-cols-4 gap-2">
+                      {userPhotos.map((photo, idx) => (
+                        <div 
+                          key={idx} 
+                          className={`relative aspect-square rounded-lg border-2 overflow-hidden cursor-pointer group ${idx === activePhotoIndex ? 'border-blue-500 ring-2 ring-blue-500/20' : 'border-stone-200 hover:border-stone-300'}`}
+                          onClick={() => {
+                            setActivePhotoIndex(idx);
+                            setIsSelected(true);
+                          }}
+                        >
+                          <img src={photo} alt={`Upload ${idx + 1}`} className="w-full h-full object-cover" />
+                          <button 
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setUserPhotos(prev => {
+                                const filtered = prev.filter((_, i) => i !== idx);
+                                if (activePhotoIndex >= filtered.length) {
+                                  setActivePhotoIndex(Math.max(0, filtered.length - 1));
+                                }
+                                return filtered;
+                              });
+                            }}
+                            className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-sm"
+                            title="Delete photo"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-stone-500 italic">Click a thumbnail to position/adjust that photo inside the frame.</p>
+                  </div>
+                )}
 
                 {/* Instructions */}
                 {userPhoto && (
