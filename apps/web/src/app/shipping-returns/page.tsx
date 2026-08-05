@@ -21,9 +21,26 @@ export default function ShippingReturnsPage() {
       .then((res) => {
         if (res.data?.data?.shipping) {
           setContent(res.data.data.shipping);
+        } else {
+          const saved = localStorage.getItem('piks_support_content');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.shipping) {
+              setContent(parsed.shipping);
+            }
+          }
         }
       })
-      .catch((err) => console.error('Failed to load shipping policy:', err));
+      .catch((err) => {
+        console.error('Failed to load shipping policy:', err);
+        const saved = localStorage.getItem('piks_support_content');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.shipping) {
+            setContent(parsed.shipping);
+          }
+        }
+      });
   }, []);
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans pb-20">

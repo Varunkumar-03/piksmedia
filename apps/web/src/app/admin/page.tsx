@@ -423,6 +423,16 @@ export default function AdminDashboardPage() {
         const res = await axios.get(`${API_BASE_URL}/settings/support-content`, { validateStatus: () => true }).catch(() => ({ data: { data: null } }));
         if (res.data?.data) {
           setSupportContent(res.data.data);
+        } else {
+          const saved = localStorage.getItem('piks_support_content');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            setSupportContent((prev: any) => ({
+              ...prev,
+              ...parsed,
+              sizeGuide: parsed.sizeGuide || prev.sizeGuide
+            }));
+          }
         }
       } else if (activeTab === 'viewers') {
         setLoadingViewerStats(true);
