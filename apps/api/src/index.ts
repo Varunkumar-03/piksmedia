@@ -26,16 +26,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // DB Connection
 let connectionPromise: Promise<void> | null = null;
-const connectDB = async () => {
+
+const seedData = async () => {
   try {
-    let mongoUri = process.env.MONGO_URI;
-    if (!mongoUri) {
-      console.warn('MONGO_URI is not defined. Connecting to local MongoDB at mongodb://127.0.0.1:27017/piks');
-      mongoUri = 'mongodb://127.0.0.1:27017/piks';
-    }
-    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
-    console.log(`MongoDB Connected`);
-    
     // Seed admin if none exists
     const adminExists = await User.findOne({ email: 'admin@piksmedia.com' });
     if (!adminExists) {
@@ -65,6 +58,23 @@ const connectDB = async () => {
       await Category.insertMany(defaultCategories);
       console.log('Seeded default categories into MongoDB database');
     }
+  } catch (err) {
+    console.error('Asynchronous seeding check failed:', err);
+  }
+};
+
+const connectDB = async () => {
+  try {
+    let mongoUri = process.env.MONGO_URI;
+    if (!mongoUri) {
+      console.warn('MONGO_URI is not defined. Connecting to local MongoDB at mongodb://127.0.0.1:27017/piks');
+      mongoUri = 'mongodb://127.0.0.1:27017/piks';
+    }
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+    console.log(`MongoDB Connected`);
+    
+    // Seed asynchronously so it doesn't block the HTTP request execution
+    seedData();
   } catch (error) {
     console.error('MongoDB Connection Error:', error);
     console.warn('Backend server continuing in offline mode with local persistence fallback.');
