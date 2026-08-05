@@ -9,11 +9,12 @@ import axios from 'axios';
 import { API_BASE_URL } from '../../config';
 
 export default function ShippingReturnsPage() {
-  const [content, setContent] = useState({
+  const [content, setContent] = useState<any>({
     processingTime: "Custom frames take 3-5 business days to craft in our workshop. Standard prints and accessories ship within 1-2 business days.",
     guarantee: "If your frame arrives damaged or with any defects, we will replace it immediately at no cost to you. Please report issues within 48 hours of delivery.",
     customOrders: "Because custom frames are cut to your exact specifications, they cannot be returned or exchanged due to buyer's remorse or measurement errors.",
-    standardItems: "Non-custom items (like pre-sized frames or accessories) can be returned within 30 days of delivery. Items must be in original packaging. A 10% restocking fee applies."
+    standardItems: "Non-custom items (like pre-sized frames or accessories) can be returned within 30 days of delivery. Items must be in original packaging. A 10% restocking fee applies.",
+    methods: "Standard Ground: 3-5 business days (Free over ₹8,000)\nExpedited: 2 business days\nNext Day Air: 1 business day"
   });
 
   useEffect(() => {
@@ -76,18 +77,25 @@ export default function ShippingReturnsPage() {
               <div>
                 <h3 className="font-bold text-stone-900 mb-2">Shipping Methods</h3>
                 <ul className="space-y-2">
-                  <li className="flex items-start gap-2">
-                    <Box className="w-5 h-5 text-stone-400 shrink-0 mt-0.5" />
-                    <span><strong>Standard Ground:</strong> 3-5 business days (Free over ₹8,000)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Box className="w-5 h-5 text-stone-400 shrink-0 mt-0.5" />
-                    <span><strong>Expedited:</strong> 2 business days</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <Box className="w-5 h-5 text-stone-400 shrink-0 mt-0.5" />
-                    <span><strong>Next Day Air:</strong> 1 business day</span>
-                  </li>
+                  {(content.methods || "Standard Ground: 3-5 business days (Free over ₹8,000)\nExpedited: 2 business days\nNext Day Air: 1 business day").split('\n').filter(Boolean).map((method: string, index: number) => {
+                    const parts = method.split(':');
+                    if (parts.length > 1) {
+                      return (
+                        <li key={index} className="flex items-start gap-2">
+                          <Box className="w-5 h-5 text-stone-400 shrink-0 mt-0.5" />
+                          <span>
+                            <strong>{parts[0].trim()}:</strong>{parts.slice(1).join(':')}
+                          </span>
+                        </li>
+                      );
+                    }
+                    return (
+                      <li key={index} className="flex items-start gap-2">
+                        <Box className="w-5 h-5 text-stone-400 shrink-0 mt-0.5" />
+                        <span>{method}</span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
 

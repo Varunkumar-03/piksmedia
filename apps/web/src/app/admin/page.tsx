@@ -189,7 +189,8 @@ export default function AdminDashboardPage() {
       processingTime: "Custom frames take 3-5 business days to craft in our workshop. Standard prints and accessories ship within 1-2 business days.",
       guarantee: "If your frame arrives damaged or with any defects, we will replace it immediately at no cost to you. Please report issues within 48 hours of delivery.",
       customOrders: "Because custom frames are cut to your exact specifications, they cannot be returned or exchanged due to buyer's remorse or measurement errors.",
-      standardItems: "Non-custom items (like pre-sized frames or accessories) can be returned within 30 days of delivery. Items must be in original packaging. A 10% restocking fee applies."
+      standardItems: "Non-custom items (like pre-sized frames or accessories) can be returned within 30 days of delivery. Items must be in original packaging. A 10% restocking fee applies.",
+      methods: "Standard Ground: 3-5 business days (Free over ₹8,000)\nExpedited: 2 business days\nNext Day Air: 1 business day"
     },
     sizeGuide: [
       { art: '5" x 7"', mat: '1.5"', frame: '8" x 10"' },
@@ -5051,6 +5052,16 @@ export default function AdminDashboardPage() {
                               onChange={e => setSupportContent({...supportContent, shipping: {...supportContent.shipping, processingTime: e.target.value}})}
                               className="w-full bg-white p-3 rounded-lg border border-stone-200 outline-none focus:border-stone-400 text-sm"
                               rows={2}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-bold text-stone-700 mb-1">Shipping Methods (One per line)</label>
+                            <textarea 
+                              value={supportContent.shipping.methods || ''}
+                              onChange={e => setSupportContent({...supportContent, shipping: {...supportContent.shipping, methods: e.target.value}})}
+                              className="w-full bg-white p-3 rounded-lg border border-stone-200 outline-none focus:border-stone-400 text-sm font-mono"
+                              rows={3}
+                              placeholder="Standard Ground: 3-5 business days&#10;Expedited: 2 business days"
                             />
                           </div>
                           <div>
