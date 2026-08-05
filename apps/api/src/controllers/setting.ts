@@ -654,7 +654,42 @@ export const updateShippingReturnAddress = async (req: Request, res: Response): 
       { value: address },
       { new: true, upsert: true }
     );
+ 
+    res.status(200).json({ success: true, data: setting.value });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
 
+export const getSupportContent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      const localSettings = readLocalSettings();
+      res.status(200).json({ success: true, data: localSettings['support_content'] || null });
+      return;
+    }
+    const setting = await Setting.findOne({ key: 'support_content' });
+    res.status(200).json({ success: true, data: setting ? setting.value : null });
+  } catch (error: any) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+export const updateSupportContent = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { content } = req.body;
+    if (mongoose.connection.readyState !== 1) {
+      const localSettings = readLocalSettings();
+      localSettings['support_content'] = content;
+      writeLocalSettings(localSettings);
+      res.status(200).json({ success: true, data: content });
+      return;
+    }
+    const setting = await Setting.findOneAndUpdate(
+      { key: 'support_content' },
+      { value: content },
+      { new: true, upsert: true }
+    );
     res.status(200).json({ success: true, data: setting.value });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });

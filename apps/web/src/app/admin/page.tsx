@@ -201,23 +201,15 @@ export default function AdminDashboardPage() {
     ]
   });
 
-  useEffect(() => {
-    const savedSupport = localStorage.getItem('piks_support_content');
-    if (savedSupport) {
-      const parsed = JSON.parse(savedSupport);
-      setSupportContent({
-        ...supportContent,
-        ...parsed,
-        sizeGuide: parsed.sizeGuide || supportContent.sizeGuide
+  const saveSupportContent = async () => {
+    try {
+      await axios.put(`${API_BASE_URL}/settings/support-content`, { content: supportContent }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
-    } else {
-      localStorage.setItem('piks_support_content', JSON.stringify(supportContent));
+      toast.success('Support pages content saved to database!');
+    } catch (err) {
+      toast.error('Failed to save support pages content');
     }
-  }, []);
-
-  const saveSupportContent = () => {
-    localStorage.setItem('piks_support_content', JSON.stringify(supportContent));
-    toast.success('Support pages content updated!');
   };
 
   const [openSupportSection, setOpenSupportSection] = useState<string | null>('faqs');
@@ -426,6 +418,11 @@ export default function AdminDashboardPage() {
         const res = await axios.get(`${API_BASE_URL}/settings/why-us`, { validateStatus: () => true }).catch(() => ({ data: { data: [] } }));
         if (res.data?.data) {
           setWhyUsSettings(res.data.data);
+        }
+      } else if (activeTab === 'support-pages') {
+        const res = await axios.get(`${API_BASE_URL}/settings/support-content`, { validateStatus: () => true }).catch(() => ({ data: { data: null } }));
+        if (res.data?.data) {
+          setSupportContent(res.data.data);
         }
       } else if (activeTab === 'viewers') {
         setLoadingViewerStats(true);

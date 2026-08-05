@@ -9,7 +9,8 @@ import {
   getWhyUsSettings, updateWhyUsSettings,
   getCoupons, updateCoupons,
   getOffers, updateOffers,
-  getShippingReturnAddress, updateShippingReturnAddress
+  getShippingReturnAddress, updateShippingReturnAddress,
+  getSupportContent, updateSupportContent
 } from '../controllers/setting';
 import { protect, authorize } from '../middlewares/auth';
 import { UserRole } from '../models/User';
@@ -45,5 +46,8 @@ router.put('/offers', protect, authorize(UserRole.ADMIN, UserRole.SUPER_ADMIN), 
 
 router.get('/shipping-return-address', getShippingReturnAddress);
 router.put('/shipping-return-address', protect, authorize(UserRole.ADMIN, UserRole.SUPER_ADMIN), updateShippingReturnAddress);
+
+router.get('/support-content', getSupportContent);
+router.put('/support-content', protect, authorize(UserRole.ADMIN, UserRole.SUPER_ADMIN), updateSupportContent);
 
 export default router;

@@ -5,6 +5,8 @@ import { ChevronLeft, Truck, RefreshCcw, ShieldCheck, Box } from 'lucide-react';
 import Link from 'next/link';
 
 import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 
 export default function ShippingReturnsPage() {
   const [content, setContent] = useState({
@@ -15,13 +17,13 @@ export default function ShippingReturnsPage() {
   });
 
   useEffect(() => {
-    const saved = localStorage.getItem('piks_support_content');
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed.shipping) {
-        setContent(parsed.shipping);
-      }
-    }
+    axios.get(`${API_BASE_URL}/settings/support-content`)
+      .then((res) => {
+        if (res.data?.data?.shipping) {
+          setContent(res.data.data.shipping);
+        }
+      })
+      .catch((err) => console.error('Failed to load shipping policy:', err));
   }, []);
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans pb-20">
