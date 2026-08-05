@@ -423,11 +423,18 @@ export default function AdminDashboardPage() {
       } else if (activeTab === 'support-pages') {
         const res = await axios.get(`${API_BASE_URL}/settings/support-content`, { validateStatus: () => true }).catch(() => ({ data: { data: null } }));
         if (res.data?.data) {
-          setSupportContent(res.data.data);
+          const fetched = res.data.data;
+          if (fetched.shipping && !fetched.shipping.methods) {
+            fetched.shipping.methods = "Standard Ground: 3-5 business days (Free over ₹8,000)\nExpedited: 2 business days\nNext Day Air: 1 business day";
+          }
+          setSupportContent(fetched);
         } else {
           const saved = localStorage.getItem('piks_support_content');
           if (saved) {
             const parsed = JSON.parse(saved);
+            if (parsed.shipping && !parsed.shipping.methods) {
+              parsed.shipping.methods = "Standard Ground: 3-5 business days (Free over ₹8,000)\nExpedited: 2 business days\nNext Day Air: 1 business day";
+            }
             setSupportContent((prev: any) => ({
               ...prev,
               ...parsed,
