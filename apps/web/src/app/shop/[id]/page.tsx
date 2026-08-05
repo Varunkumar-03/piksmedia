@@ -305,6 +305,28 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-stone-900 font-sans pb-32">
+      {/* Product JSON-LD for AI Search & SEO Crawlers */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.title,
+            "image": product.images || [product.image],
+            "description": product.description,
+            "sku": product._id,
+            "offers": {
+              "@type": "Offer",
+              "url": typeof window !== 'undefined' ? window.location.href : '',
+              "priceCurrency": "INR",
+              "price": displayPrice,
+              "itemCondition": "https://schema.org/NewCondition",
+              "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+            }
+          })
+        }}
+      />
       {/* Navigation */}
       <Navbar className="w-full z-50 py-4 px-8 flex items-center justify-between bg-white/60 backdrop-blur-md border-b border-stone-200 sticky top-0" />
 

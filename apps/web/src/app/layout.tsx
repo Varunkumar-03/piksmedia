@@ -18,8 +18,34 @@ import AxiosSetup from '../components/AxiosSetup';
 import MascotWrapper from '../components/MascotWrapper';
 
 export const metadata: Metadata = {
-  title: "Piks | Premium Handcrafted Frames & Fine Art Prints",
-  description: "Transform your memories into museum-grade framed prints & custom wall decor.",
+  title: "Piks Media | Premium Handcrafted Frames & Fine Art Prints",
+  description: "Transform your memories into museum-grade framed prints, custom photo canvases, and handcrafted frames.",
+  keywords: ["framed prints", "custom frames", "canvas printing", "photo framing", "fine art prints", "premium frames", "Piks Media"],
+  metadataBase: new URL('https://piksmedia.com'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: "Piks Media | Premium Handcrafted Frames & Fine Art Prints",
+    description: "Transform your memories into museum-grade framed prints, custom photo canvases, and handcrafted frames.",
+    url: "https://piksmedia.com",
+    siteName: "Piks Media",
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 800,
+        alt: "Piks Media Logo",
+      }
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Piks Media | Premium Handcrafted Frames & Fine Art Prints",
+    description: "Transform your memories into museum-grade framed prints, custom photo canvases, and handcrafted frames.",
+    images: ["/logo.png"],
+  },
   icons: {
     icon: [
       { url: '/logo.png', type: 'image/png' }
@@ -45,6 +71,24 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/logo.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1c1c1c" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Piks Media",
+              "url": "https://piksmedia.com",
+              "logo": "https://piksmedia.com/logo.png",
+              "description": "Premium handcrafted frames and custom museum-grade fine art prints.",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+91-9999999999",
+                "contactType": "customer service"
+              }
+            })
+          }}
+        />
       </head>
       <body className="min-h-full flex flex-col overflow-x-hidden max-w-full relative">
         <main className="flex-1">{children}</main>
