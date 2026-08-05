@@ -414,6 +414,8 @@ export default function CheckoutPage() {
 
       const authToken = token || (typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('auth-storage') || '{}')?.state?.token : null);
 
+      const localSessionId = typeof window !== 'undefined' ? localStorage.getItem('piks_session_id') : null;
+
       const res = await axios.post(`${API_BASE_URL}/orders`, {
         orderItems,
         shippingAddress: {
@@ -431,7 +433,8 @@ export default function CheckoutPage() {
         taxPrice: 0,
         shippingPrice: shipping,
         totalPrice: finalTotal,
-        user: user?._id || (user as any)?.id
+        user: user?._id || (user as any)?.id,
+        sessionId: localSessionId
       }, {
         headers: {
           ...(authToken && authToken !== 'null' && authToken !== 'undefined' ? { Authorization: `Bearer ${authToken}` } : {})

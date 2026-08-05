@@ -95,6 +95,7 @@ import uploadRoutes from './routes/upload';
 import categoryRoutes from './routes/category';
 import sizeRoutes from './routes/size';
 import reviewRoutes from './routes/review';
+import visitorRoutes from './routes/visitor';
 
 // Routes
 app.use('/api/v1/auth', authRoutes);
@@ -106,6 +107,7 @@ app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/sizes', sizeRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
+app.use('/api/v1/visitors', visitorRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Piks Media API is running');

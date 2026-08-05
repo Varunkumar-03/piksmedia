@@ -10,7 +10,7 @@ import useAuthStore from '../../store/useAuthStore';
 import { 
   LayoutDashboard, Package, Users, ShoppingBag, 
   Settings, LogOut, ArrowRight, Plus, Trash2, Edit2, Lock,
-  CheckCircle2, XCircle, RefreshCcw, User as UserIcon, ImageIcon, MapPin, List, Search, Zap, Tag, Clock, IndianRupee, Printer, Phone, Home, Check, Star, Mail, Download, ChevronDown, ChevronUp, HelpCircle, ExternalLink, Truck, Play
+  CheckCircle2, XCircle, RefreshCcw, User as UserIcon, ImageIcon, MapPin, List, Search, Zap, Tag, Clock, IndianRupee, Printer, Phone, Home, Check, Star, Mail, Download, ChevronDown, ChevronUp, HelpCircle, ExternalLink, Truck, Play, Eye
 } from 'lucide-react';
 
 export default function AdminDashboardPage() {
@@ -263,6 +263,8 @@ export default function AdminDashboardPage() {
   const [sameDayPincodes, setSameDayPincodes] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [viewerStats, setViewerStats] = useState<any>(null);
+  const [loadingViewerStats, setLoadingViewerStats] = useState(false);
 
   // Form states
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -425,6 +427,15 @@ export default function AdminDashboardPage() {
         if (res.data?.data) {
           setWhyUsSettings(res.data.data);
         }
+      } else if (activeTab === 'viewers') {
+        setLoadingViewerStats(true);
+        const res = await axios.get(`${API_BASE_URL}/visitors/stats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).catch(() => ({ data: { data: null } }));
+        if (res.data?.data) {
+          setViewerStats(res.data.data);
+        }
+        setLoadingViewerStats(false);
       }
     } catch (error) {
       console.error('Error fetching admin data', error);
@@ -1524,6 +1535,7 @@ export default function AdminDashboardPage() {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'viewers', label: 'Viewers', icon: Eye },
     { id: 'categories', label: 'Categories', icon: List },
     { id: 'coupons', label: 'Coupons & Offers', icon: Tag },
     { id: 'products', label: 'Products', icon: Package },
@@ -1720,6 +1732,88 @@ export default function AdminDashboardPage() {
                         </table>
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {/* Viewers Tab */}
+                {activeTab === 'viewers' && (
+                  <div className="space-y-8 animate-in fade-in duration-300">
+                    <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-xs">
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="p-3 bg-amber-50 rounded-xl text-amber-700">
+                          <Eye className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-bold text-stone-900">Viewer Analytics</h3>
+                          <p className="text-sm text-stone-500">Real-time visitor traffic and checkout abandonment tracking</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {loadingViewerStats ? (
+                      <div className="bg-white p-12 rounded-2xl border border-stone-200 text-center shadow-xs">
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-stone-900 mx-auto"></div>
+                        <p className="mt-4 text-stone-500">Calculating visitor analytics...</p>
+                      </div>
+                    ) : viewerStats ? (
+                      <div className="space-y-8">
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          {/* Card 1: Total Visitors */}
+                          <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between">
+                            <div>
+                              <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Total Visitors</p>
+                              <h4 className="text-4xl font-extrabold text-stone-900 mt-2">{Number(viewerStats.totalVisitors).toLocaleString()}</h4>
+                            </div>
+                            <p className="text-xs text-stone-400 mt-4">All-time unique tracked user sessions</p>
+                          </div>
+
+                          {/* Card 2: Weekly Analytics */}
+                          <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs">
+                            <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Weekly Bounce Rate</p>
+                            <h4 className="text-4xl font-extrabold text-stone-900 mt-2">{viewerStats.weeklyBounces} <span className="text-sm font-normal text-stone-500">left</span></h4>
+                            <div className="mt-4 space-y-1">
+                              <div className="flex justify-between text-xs text-stone-500">
+                                <span>Weekly Visitors:</span>
+                                <span className="font-semibold">{viewerStats.weeklyTotal}</span>
+                              </div>
+                              <div className="flex justify-between text-xs text-stone-500">
+                                <span>Conversion Rate:</span>
+                                <span className="font-semibold text-emerald-600">{viewerStats.weeklyConversionRate}%</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Card 3: Monthly Analytics */}
+                          <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs">
+                            <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Monthly Bounce Rate</p>
+                            <h4 className="text-4xl font-extrabold text-stone-900 mt-2">{viewerStats.monthlyBounces} <span className="text-sm font-normal text-stone-500">left</span></h4>
+                            <div className="mt-4 space-y-1">
+                              <div className="flex justify-between text-xs text-stone-500">
+                                <span>Monthly Visitors:</span>
+                                <span className="font-semibold">{viewerStats.monthlyTotal}</span>
+                              </div>
+                              <div className="flex justify-between text-xs text-stone-500">
+                                <span>Conversion Rate:</span>
+                                <span className="font-semibold text-emerald-600">{viewerStats.monthlyConversionRate}%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Analysis Card */}
+                        <div className="bg-stone-900 text-white p-8 rounded-2xl shadow-sm space-y-4">
+                          <h4 className="text-lg font-bold">Understanding Bounce Tracking</h4>
+                          <p className="text-stone-300 text-sm leading-relaxed max-w-3xl">
+                            A visitor is classified as <span className="text-amber-400 font-semibold">"leaving without buying" (bounce)</span> if their unique tracking session was recorded, but they did not complete a checkout transaction. Conversion rate reflects the percentage of weekly and monthly visitors who successfully completed a purchase.
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-white p-8 rounded-2xl border border-stone-200 text-center text-stone-500 shadow-xs">
+                        No analytics records found.
+                      </div>
+                    )}
                   </div>
                 )}
 

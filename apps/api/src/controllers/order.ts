@@ -135,7 +135,7 @@ const generateNextOrderId = (orders: any[] = []): string => {
 
 export const createOrder = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice, user: reqUserId } = req.body;
+    const { orderItems, shippingAddress, paymentMethod, itemsPrice, taxPrice, shippingPrice, totalPrice, user: reqUserId, sessionId } = req.body;
 
     if (!orderItems || orderItems.length === 0) {
       res.status(400).json({ success: false, error: 'No order items' });
@@ -212,6 +212,16 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
       }
     } catch (stockError) {
       console.error('Error reducing stock count on order:', stockError);
+    }
+
+    // Mark visitor session as purchased
+    if (sessionId) {
+      try {
+        const Visitor = mongoose.model('Visitor');
+        await Visitor.findOneAndUpdate({ sessionId }, { hasPurchased: true });
+      } catch (visitorErr) {
+        console.error('Error updating visitor status on checkout:', visitorErr);
+      }
     }
 
     res.status(201).json({ success: true, data: normalizeOrder(createdOrder) });
