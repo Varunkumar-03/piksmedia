@@ -1758,17 +1758,26 @@ export default function AdminDashboardPage() {
                     ) : viewerStats ? (
                       <div className="space-y-8">
                         {/* Stats Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                           {/* Card 1: Total Visitors */}
                           <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between">
                             <div>
                               <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Total Visitors</p>
                               <h4 className="text-4xl font-extrabold text-stone-900 mt-2">{Number(viewerStats.totalVisitors).toLocaleString()}</h4>
                             </div>
-                            <p className="text-xs text-stone-400 mt-4">All-time unique tracked user sessions</p>
+                            <p className="text-xs text-stone-400 mt-4">All-time unique user sessions</p>
                           </div>
 
-                          {/* Card 2: Weekly Analytics */}
+                          {/* Card 2: Total Buyers */}
+                          <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs flex flex-col justify-between">
+                            <div>
+                              <p className="text-xs font-bold text-stone-500 uppercase tracking-wider text-emerald-700 font-semibold">Total Buyers</p>
+                              <h4 className="text-4xl font-extrabold text-stone-900 mt-2">{Number(viewerStats.totalBuyers || 0).toLocaleString()}</h4>
+                            </div>
+                            <p className="text-xs text-emerald-600 font-medium mt-4">Customers who placed orders</p>
+                          </div>
+
+                          {/* Card 3: Weekly Analytics */}
                           <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs">
                             <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Weekly Bounce Rate</p>
                             <h4 className="text-4xl font-extrabold text-stone-900 mt-2">{viewerStats.weeklyBounces} <span className="text-sm font-normal text-stone-500">left</span></h4>
@@ -1777,14 +1786,10 @@ export default function AdminDashboardPage() {
                                 <span>Weekly Visitors:</span>
                                 <span className="font-semibold">{viewerStats.weeklyTotal}</span>
                               </div>
-                              <div className="flex justify-between text-xs text-stone-500">
-                                <span>Conversion Rate:</span>
-                                <span className="font-semibold text-emerald-600">{viewerStats.weeklyConversionRate}%</span>
-                              </div>
                             </div>
                           </div>
 
-                          {/* Card 3: Monthly Analytics */}
+                          {/* Card 4: Monthly Analytics */}
                           <div className="bg-white p-6 rounded-2xl border border-stone-200 shadow-xs">
                             <p className="text-xs font-bold text-stone-500 uppercase tracking-wider">Monthly Bounce Rate</p>
                             <h4 className="text-4xl font-extrabold text-stone-900 mt-2">{viewerStats.monthlyBounces} <span className="text-sm font-normal text-stone-500">left</span></h4>
@@ -1793,20 +1798,65 @@ export default function AdminDashboardPage() {
                                 <span>Monthly Visitors:</span>
                                 <span className="font-semibold">{viewerStats.monthlyTotal}</span>
                               </div>
-                              <div className="flex justify-between text-xs text-stone-500">
-                                <span>Conversion Rate:</span>
-                                <span className="font-semibold text-emerald-600">{viewerStats.monthlyConversionRate}%</span>
-                              </div>
                             </div>
                           </div>
                         </div>
 
-                        {/* Analysis Card */}
-                        <div className="bg-stone-900 text-white p-8 rounded-2xl shadow-sm space-y-4">
-                          <h4 className="text-lg font-bold">Understanding Bounce Tracking</h4>
-                          <p className="text-stone-300 text-sm leading-relaxed max-w-3xl">
-                            A visitor is classified as <span className="text-amber-400 font-semibold">"leaving without buying" (bounce)</span> if their unique tracking session was recorded, but they did not complete a checkout transaction. Conversion rate reflects the percentage of weekly and monthly visitors who successfully completed a purchase.
-                          </p>
+                        {/* Turnaround Rate Graphical Representation */}
+                        <div className="bg-white p-8 rounded-2xl border border-stone-200 shadow-xs">
+                          <h4 className="text-lg font-bold text-stone-900 mb-6 font-semibold">Turnaround Rate (Conversion)</h4>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            {/* Weekly Ring */}
+                            <div className="flex flex-col items-center p-6 bg-stone-50 rounded-xl border border-stone-100">
+                              <span className="text-sm font-bold text-stone-600 mb-4">Weekly Turnaround</span>
+                              <div className="relative flex items-center justify-center">
+                                {(() => {
+                                  const rate = Number(viewerStats.weeklyConversionRate || 0);
+                                  const radius = 50;
+                                  const circ = 2 * Math.PI * radius;
+                                  const offset = circ - (rate / 100) * circ;
+                                  return (
+                                    <>
+                                      <svg className="w-36 h-36 transform -rotate-90">
+                                        <circle cx="72" cy="72" r={radius} className="text-stone-200" strokeWidth="8" stroke="currentColor" fill="transparent" />
+                                        <circle cx="72" cy="72" r={radius} className="text-emerald-600 transition-all duration-1000 ease-out" strokeWidth="8" strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" stroke="currentColor" fill="transparent" />
+                                      </svg>
+                                      <div className="absolute flex flex-col items-center justify-center">
+                                        <span className="text-2xl font-black text-stone-950">{rate}%</span>
+                                      </div>
+                                    </>
+                                  );
+                                })()}
+                              </div>
+                              <p className="text-xs text-stone-500 mt-4 font-medium text-center">Percentage of weekly visitors converted to buyers</p>
+                            </div>
+
+                            {/* Monthly Ring */}
+                            <div className="flex flex-col items-center p-6 bg-stone-50 rounded-xl border border-stone-100">
+                              <span className="text-sm font-bold text-stone-600 mb-4">Monthly Turnaround</span>
+                              <div className="relative flex items-center justify-center">
+                                {(() => {
+                                  const rate = Number(viewerStats.monthlyConversionRate || 0);
+                                  const radius = 50;
+                                  const circ = 2 * Math.PI * radius;
+                                  const offset = circ - (rate / 100) * circ;
+                                  return (
+                                    <>
+                                      <svg className="w-36 h-36 transform -rotate-90">
+                                        <circle cx="72" cy="72" r={radius} className="text-stone-200" strokeWidth="8" stroke="currentColor" fill="transparent" />
+                                        <circle cx="72" cy="72" r={radius} className="text-emerald-600 transition-all duration-1000 ease-out" strokeWidth="8" strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round" stroke="currentColor" fill="transparent" />
+                                      </svg>
+                                      <div className="absolute flex flex-col items-center justify-center">
+                                        <span className="text-2xl font-black text-stone-950">{rate}%</span>
+                                      </div>
+                                    </>
+                                  );
+                                })()}
+                              </div>
+                              <p className="text-xs text-stone-500 mt-4 font-medium text-center">Percentage of monthly visitors converted to buyers</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ) : (

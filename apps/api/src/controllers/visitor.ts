@@ -25,6 +25,7 @@ export const recordHit = async (req: Request, res: Response): Promise<void> => {
 export const getVisitorStats = async (req: Request, res: Response): Promise<void> => {
   try {
     const totalVisitors = await Visitor.countDocuments();
+    const totalBuyers = await Visitor.countDocuments({ hasPurchased: true });
 
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -52,6 +53,7 @@ export const getVisitorStats = async (req: Request, res: Response): Promise<void
       success: true,
       data: {
         totalVisitors,
+        totalBuyers,
         weeklyBounces,
         monthlyBounces,
         weeklyTotal,
