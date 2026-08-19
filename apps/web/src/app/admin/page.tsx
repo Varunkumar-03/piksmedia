@@ -8,7 +8,7 @@ import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import useAuthStore from '../../store/useAuthStore';
 import { 
-  LayoutDashboard, Package, Users, ShoppingBag, 
+  Menu, X, LayoutDashboard, Package, Users, ShoppingBag, 
   Settings, LogOut, ArrowRight, Plus, Trash2, Edit2, Lock,
   CheckCircle2, XCircle, RefreshCcw, User as UserIcon, ImageIcon, MapPin, List, Search, Zap, Tag, Clock, IndianRupee, Printer, Phone, Home, Check, Star, Mail, Download, ChevronDown, ChevronUp, HelpCircle, ExternalLink, Truck, Play, Eye
 } from 'lucide-react';
@@ -18,6 +18,7 @@ export default function AdminDashboardPage() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
     const savedTab = localStorage.getItem('adminActiveTab');
@@ -30,6 +31,7 @@ export default function AdminDashboardPage() {
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
     localStorage.setItem('adminActiveTab', tabId);
+    setIsSidebarOpen(false);
   };
 
   const [stats, setStats] = useState({ totalUsers: 0, totalOrders: 0, totalRevenue: 0 });
@@ -1590,8 +1592,18 @@ export default function AdminDashboardPage() {
           
           {/* Header */}
           <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-            <div className="md:w-64 flex items-center justify-center pt-3 pb-1">
-              <img src="/logo.png" alt="Piks Logo" className="h-14 md:h-16 w-auto object-contain drop-shadow-xs" />
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              {/* Hamburger Button on Mobile */}
+              <button 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 md:hidden text-stone-700 transition-colors shrink-0"
+                title="Toggle Sidebar Menu"
+              >
+                {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
+              <div className="flex items-center justify-center pt-3 pb-1">
+                <img src="/logo.png" alt="Piks Logo" className="h-14 md:h-16 w-auto object-contain drop-shadow-xs" />
+              </div>
             </div>
             <div className="flex items-center gap-4 ml-auto">
               <div className="text-right">
@@ -1608,11 +1620,23 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Sidebar */}
-          <div className="md:w-64 flex-shrink-0">
-            <div className="bg-white rounded-2xl border border-stone-200 sticky top-28 shadow-sm overflow-hidden">
-              <div className="max-h-[calc(100vh-8rem)] overflow-y-auto p-4 custom-admin-sidebar">
+        <div className="flex flex-col md:flex-row gap-8 relative">
+          {/* Sidebar Backdrop Overlay on Mobile */}
+          {isSidebarOpen && (
+            <div 
+              className="fixed inset-0 z-30 bg-stone-900/40 backdrop-blur-xs md:hidden" 
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+
+          {/* Sidebar Container */}
+          <div className={`flex-shrink-0 transition-all duration-300 z-30 ${
+            isSidebarOpen 
+              ? 'fixed left-4 top-24 right-4 md:relative md:left-auto md:top-auto md:right-auto md:w-64' 
+              : 'hidden md:block md:w-64'
+          }`}>
+            <div className="bg-white rounded-2xl border border-stone-200 sticky top-28 shadow-sm overflow-hidden max-h-[calc(100vh-10rem)] md:max-h-[calc(100vh-8rem)]">
+              <div className="overflow-y-auto p-4 custom-admin-sidebar max-h-[calc(100vh-11rem)] md:max-h-[calc(100vh-8.5rem)]">
                 <nav className="space-y-1">
                   {tabs.map((tab) => (
                     <button
