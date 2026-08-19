@@ -445,7 +445,7 @@ export default function Home() {
               });
               return tagged.length > 0 ? tagged : catalogProducts;
             })().slice(0, 4).map((item: any, idx: number) => {
-              const imgSrc = (item.images && item.images.length > 0) ? item.images[0] : (item.image || landingImages.bestSellers[idx] || '');
+              const imgSrc = (item.images && item.images.length > 0) ? item.images[0] : (item.image || (mounted && landingImages.bestSellers[idx] ? landingImages.bestSellers[idx] : defaultLandingImages.bestSellers[idx]) || '');
               const itemTitle = item.title;
               const itemPrice = item.price;
               const itemCollection = item.collection || (item.category?.name ? `${item.category.name} Collection` : 'Featured Collection');

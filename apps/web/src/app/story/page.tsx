@@ -42,8 +42,10 @@ const coreValueIcons = [Heart, Star, Award];
 
 export default function WhyUsPage() {
   const [content, setContent] = useState<any>(DEFAULT_CONTENT);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchContent = async () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/settings/why-us`);
@@ -114,10 +116,10 @@ export default function WhyUsPage() {
       <section className="max-w-7xl mx-auto px-6 md:px-12 mb-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-2 aspect-[16/9] rounded-3xl overflow-hidden bg-stone-200 animate-in fade-in slide-in-from-left-4 duration-1000 delay-150">
-            <img src={showcase.image1 || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2000'} alt="Craftsmanship" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+            <img src={mounted && showcase.image1 ? showcase.image1 : 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2000'} alt="Craftsmanship" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
           </div>
           <div className="aspect-square md:aspect-auto rounded-3xl overflow-hidden bg-stone-200 animate-in fade-in slide-in-from-right-4 duration-1000 delay-300">
-            <img src={showcase.image2 || 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=800'} alt="Details" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+            <img src={mounted && showcase.image2 ? showcase.image2 : 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=800'} alt="Details" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
           </div>
         </div>
       </section>
@@ -146,7 +148,7 @@ export default function WhyUsPage() {
       <section className="bg-stone-900 text-stone-50 py-10 md:py-12 rounded-3xl max-w-5xl mx-auto px-6 md:px-10 my-12 shadow-xl border border-stone-800">
         <div className="flex flex-col sm:flex-row items-center gap-8 md:gap-12">
           <div className="w-44 md:w-56 aspect-[3/4] shrink-0 rounded-2xl overflow-hidden relative shadow-lg border border-stone-700/60">
-            <img src={founder.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800'} alt={founder.name || 'Founder'} className="w-full h-full object-cover" />
+            <img src={mounted && founder.image ? founder.image : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800'} alt={founder.name || 'Founder'} className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 text-left">
             <h2 className="text-xl md:text-2xl font-semibold tracking-tight mb-4 text-stone-100 leading-snug">
