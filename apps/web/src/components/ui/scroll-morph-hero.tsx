@@ -302,6 +302,12 @@ export default function ScrollMorphHero() {
 
     const isMobileView = containerSize.width > 0 && containerSize.width < 768;
 
+    if (!mounted) {
+        return (
+            <div className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] -mt-14 sm:-mt-20" />
+        );
+    }
+
     return (
         <div ref={containerRef} style={{ opacity: mounted ? 1 : 0 }} className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] overflow-hidden -mt-14 sm:-mt-20">
             {/* Background elements */}
