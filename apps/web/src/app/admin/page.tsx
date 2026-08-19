@@ -963,7 +963,7 @@ export default function AdminDashboardPage() {
       
       const itemsHtml = (order.orderItems || []).map((item: any) => `
         <tr>
-          <td>${item.title || item.size} ${item.userImage ? '<br><small style="color: #666;">(Custom Photo)</small>' : ''}</td>
+          <td>${item.title} ${item.size ? `<span style="color: #666; font-size: 12px; margin-left: 4px;">(${item.size})</span>` : ''} ${item.userImage ? '<br><small style="color: #666;">(Custom Photo)</small>' : ''}</td>
           <td style="text-align: center;">${item.quantity}</td>
           <td style="text-align: right;">₹${(item.price || 0).toFixed(2)}</td>
           <td style="text-align: right;">₹${((item.price || 0) * item.quantity).toFixed(2)}</td>
@@ -2979,9 +2979,9 @@ export default function AdminDashboardPage() {
                                                  href={prodLink}
                                                  target="_blank"
                                                  className="hover:underline hover:text-stone-900 transition-colors font-semibold text-stone-900 inline-flex items-center gap-1"
-                                                 title={`Click to view ${item.title || item.size} product page`}
+                                                 title={`Click to view ${item.title} (${item.size}) product page`}
                                                >
-                                                 {item.title || item.size} <ExternalLink className="w-3 h-3 text-stone-400 inline" />
+                                                 {item.title} {item.size && <span className="text-stone-500 font-normal text-xs ml-1">({item.size})</span>} <ExternalLink className="w-3 h-3 text-stone-400 inline" />
                                                </Link>
                                              </span>
                                              {(order.status === 'CANCELLED' || order.status === 'Cancelled') && (
@@ -3245,9 +3245,9 @@ export default function AdminDashboardPage() {
                                                 href={prodLink}
                                                 target="_blank"
                                                 className="font-bold text-stone-900 hover:text-emerald-700 underline underline-offset-2 transition-colors inline-flex items-center gap-1"
-                                                title={`Click to view ${item.title || item.size} product page`}
+                                                title={`Click to view ${item.title} (${item.size}) product page`}
                                               >
-                                                {item.title || item.size} <ExternalLink className="w-3 h-3 text-stone-400 inline" />
+                                                {item.title} {item.size && <span className="text-stone-500 font-normal text-xs ml-1">({item.size})</span>} <ExternalLink className="w-3 h-3 text-stone-400 inline" />
                                               </Link>
                                               <span className="text-stone-500 text-[11px]">(₹{item.price})</span>
                                             </li>
@@ -3559,9 +3559,9 @@ export default function AdminDashboardPage() {
                                               href={prodLink}
                                               target="_blank"
                                               className="font-bold text-stone-900 hover:text-red-700 underline underline-offset-2 transition-colors inline-flex items-center gap-1"
-                                              title={`Click to view ${item.title || item.size} product page`}
+                                              title={`Click to view ${item.title} (${item.size}) product page`}
                                             >
-                                              {item.title || item.size} <ExternalLink className="w-3 h-3 text-stone-400 inline" />
+                                              {item.title} {item.size && <span className="text-stone-500 font-normal text-xs ml-1">({item.size})</span>} <ExternalLink className="w-3 h-3 text-stone-400 inline" />
                                             </Link>
                                             <span className="text-stone-500 text-[11px]">(₹{item.price})</span>
                                           </li>
