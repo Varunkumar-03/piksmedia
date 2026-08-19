@@ -302,12 +302,6 @@ export default function ScrollMorphHero() {
 
     const isMobileView = containerSize.width > 0 && containerSize.width < 768;
 
-    if (!mounted) {
-        return (
-            <div className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] -mt-14 sm:-mt-20" />
-        );
-    }
-
     return (
         <div ref={containerRef} style={{ opacity: mounted ? 1 : 0 }} className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] overflow-hidden -mt-14 sm:-mt-20">
             {/* Background elements */}
@@ -317,7 +311,8 @@ export default function ScrollMorphHero() {
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
             </div>
 
-            <div className="flex h-full w-full flex-col items-center justify-center perspective-1000 relative z-10 overflow-hidden">
+            {mounted && (
+                <div className="flex h-full w-full flex-col items-center justify-center perspective-1000 relative z-10 overflow-hidden">
                 
                 {/* Intro Text (Fades out) */}
                 <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2 w-full px-4 sm:px-6">
@@ -430,6 +425,7 @@ export default function ScrollMorphHero() {
                     })}
                 </div>
             </div>
+            )}
         </div>
     );
 }
