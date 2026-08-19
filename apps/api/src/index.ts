@@ -22,7 +22,9 @@ app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+import os from 'os';
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(os.tmpdir()));
 
 // DB Connection
 let connectionPromise: Promise<void> | null = null;

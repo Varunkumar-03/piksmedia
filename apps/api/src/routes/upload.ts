@@ -4,11 +4,21 @@ import path from 'path';
 import fs from 'fs';
 import { optionalProtect } from '../middlewares/auth';
 
+import os from 'os';
+
 const router = Router();
 
-const uploadsDir = path.join(__dirname, '../../uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+let uploadsDir = path.join(__dirname, '../../uploads');
+try {
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  const testFile = path.join(uploadsDir, '.write-test');
+  fs.writeFileSync(testFile, 'test');
+  fs.unlinkSync(testFile);
+} catch (e) {
+  console.warn('Upload directory is read-only. Falling back to temp directory.');
+  uploadsDir = os.tmpdir();
 }
 
 // Configure Multer storage for images & videos
