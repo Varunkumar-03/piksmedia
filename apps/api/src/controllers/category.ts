@@ -11,7 +11,7 @@ const DEFAULT_CATEGORIES = [
   { _id: 'cat-2', name: 'Photo Prints', slug: 'photo-prints', description: 'Archival Quality', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=600&auto=format&fit=crop', badge: 'Giclée', availableSizes: ['8x10', '11x14'], sizeUnit: 'inches(in)' },
   { _id: 'cat-3', name: 'Canvas Art', slug: 'canvas-art', description: 'Stretched Pine', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop', badge: 'Textured', availableSizes: ['16x20', '20x24', '24x36'], sizeUnit: 'inches(in)' },
   { _id: 'cat-4', name: 'Hand Arts', slug: 'hand-arts', description: 'Custom Sketches', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop', badge: 'Handmade', availableSizes: ['11x14', '16x20'], sizeUnit: 'inches(in)' },
-  { _id: 'cat-5', name: 'Paintings', slug: 'paintings', description: 'Original Artworks', image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=600&auto=format&fit=crop', badge: 'Artisan', availableSizes: ['16x20', '24x36'], sizeUnit: 'inches(in)' },
+  { _id: 'cat-5', name: 'Paintings', slug: 'paintings', description: 'Original Artworks', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop', badge: 'Artisan', availableSizes: ['16x20', '24x36'], sizeUnit: 'inches(in)' },
   { _id: 'cat-6', name: 'Funeral Frames', slug: 'funeral-frames', description: 'Memorial Tribute', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=600&auto=format&fit=crop', badge: 'Tribute', availableSizes: ['8x10', '11x14'], sizeUnit: 'inches(in)' },
 ];
 

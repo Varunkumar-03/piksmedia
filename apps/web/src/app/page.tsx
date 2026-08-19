@@ -251,14 +251,14 @@ export default function Home() {
               { name: 'Photo Prints', description: 'Archival Quality', href: '/shop?category=Photo%20Prints', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=600&auto=format&fit=crop', badge: 'Giclée' },
               { name: 'Canvas Art', description: 'Stretched Pine', href: '/shop?category=Canvas%20Art', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop', badge: 'Textured' },
               { name: 'Hand Arts', description: 'Custom Sketches', href: '/shop?category=Hand%20Arts', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop', badge: 'Handmade' },
-              { name: 'Paintings', description: 'Original Artworks', href: '/shop?category=Paintings', image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=600&auto=format&fit=crop', badge: 'Artisan' },
+              { name: 'Paintings', description: 'Original Artworks', href: '/shop?category=Paintings', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop', badge: 'Artisan' },
               { name: 'Funeral Frames', description: 'Memorial Tribute', href: '/shop?category=Funeral%20Frames', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=600&auto=format&fit=crop', badge: 'Tribute' },
               { name: 'Custom Studio', description: 'Build Your Frame', href: '/custom', image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=600&auto=format&fit=crop', badge: 'Custom' },
               { name: 'Frames', description: 'Handcrafted Wood', href: '/shop?category=Frames', image: 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=600&auto=format&fit=crop', badge: 'Popular' },
               { name: 'Photo Prints', description: 'Archival Quality', href: '/shop?category=Photo%20Prints', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=600&auto=format&fit=crop', badge: 'Giclée' },
               { name: 'Canvas Art', description: 'Stretched Pine', href: '/shop?category=Canvas%20Art', image: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=600&auto=format&fit=crop', badge: 'Textured' },
               { name: 'Hand Arts', description: 'Custom Sketches', href: '/shop?category=Hand%20Arts', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop', badge: 'Handmade' },
-              { name: 'Paintings', description: 'Original Artworks', href: '/shop?category=Paintings', image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=600&auto=format&fit=crop', badge: 'Artisan' },
+              { name: 'Paintings', description: 'Original Artworks', href: '/shop?category=Paintings', image: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?q=80&w=600&auto=format&fit=crop', badge: 'Artisan' },
               { name: 'Funeral Frames', description: 'Memorial Tribute', href: '/shop?category=Funeral%20Frames', image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=600&auto=format&fit=crop', badge: 'Tribute' },
               { name: 'Custom Studio', description: 'Build Your Frame', href: '/custom', image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=600&auto=format&fit=crop', badge: 'Custom' }
             ]).map((cat: any, idx: number) => {
@@ -327,7 +327,7 @@ export default function Home() {
           {/* Left Large Column */}
           <Link href="/shop/custom-frames" className="group relative col-span-1 lg:col-span-6 h-[220px] sm:h-[300px] lg:h-full block overflow-hidden bg-stone-100 rounded-xl">
             <img 
-              src={landingImages.curation[0] || "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=2000&auto=format&fit=crop"} 
+              src={mounted && landingImages.curation[0] ? landingImages.curation[0] : "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=2000&auto=format&fit=crop"} 
               alt="Custom Photo Frames" 
               className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
             />
@@ -353,7 +353,7 @@ export default function Home() {
             {/* Top Row */}
             <Link href="/shop/canvas-prints" className="group relative flex-1 block overflow-hidden bg-stone-100 h-[220px] sm:h-[300px] lg:h-auto rounded-xl">
               <img 
-                src={landingImages.curation[1] || "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=2000&auto=format&fit=crop"} 
+                src={mounted && landingImages.curation[1] ? landingImages.curation[1] : "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=2000&auto=format&fit=crop"} 
                 alt="Canvas Prints" 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
               />
@@ -378,7 +378,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
               <Link href="/shop/couple-gifts" className="group relative block overflow-hidden bg-stone-100 h-[180px] sm:h-[220px] lg:h-[240px] rounded-xl">
                 <img 
-                  src={landingImages.curation[2] || "https://images.unsplash.com/photo-1520333789090-1afc82db536a?q=80&w=800&auto=format&fit=crop"} 
+                  src={mounted && landingImages.curation[2] ? landingImages.curation[2] : "https://images.unsplash.com/photo-1520333789090-1afc82db536a?q=80&w=800&auto=format&fit=crop"} 
                   alt="Couple Gifts" 
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
                 />
@@ -401,7 +401,7 @@ export default function Home() {
               
               <Link href="/shop/wedding" className="group relative block overflow-hidden bg-stone-100 h-[180px] sm:h-[220px] lg:h-[240px] rounded-xl">
                 <img 
-                  src={landingImages.curation[3] || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop"} 
+                  src={mounted && landingImages.curation[3] ? landingImages.curation[3] : "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop"} 
                   alt="Wedding" 
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
                 />
@@ -682,31 +682,31 @@ export default function Home() {
             
             {/* Image 1: Spine Top (Row 1-3, Col 1) - Arch shape */}
             <div className="col-start-1 col-end-2 row-start-1 row-end-4 relative overflow-hidden bg-stone-100 group cursor-pointer shadow-sm rounded-t-full rounded-b-2xl">
-              <img src={landingImages.community[0] || "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=800&auto=format&fit=crop"} alt="Home interior" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img src={mounted && landingImages.community[0] ? landingImages.community[0] : "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=800&auto=format&fit=crop"} alt="Home interior" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
 
             {/* Image 2: Spine Bottom (Row 4-5, Col 1) - Inverted Arch shape */}
             <div className="col-start-1 col-end-2 row-start-4 row-end-6 relative overflow-hidden bg-stone-100 group cursor-pointer shadow-sm rounded-b-full rounded-t-2xl">
-              <img src={landingImages.community[1] || "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop"} alt="Bedroom interior" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img src={mounted && landingImages.community[1] ? landingImages.community[1] : "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop"} alt="Bedroom interior" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
 
             {/* Image 3: Loop Top (Row 1, Col 2) - Pill shape */}
             <div className="col-start-2 col-end-3 row-start-1 row-end-2 relative overflow-hidden bg-stone-100 group cursor-pointer shadow-sm rounded-full">
-              <img src={landingImages.community[2] || "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop"} alt="Event space" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img src={mounted && landingImages.community[2] ? landingImages.community[2] : "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop"} alt="Event space" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
 
             {/* Image 4: Loop Right (Row 1-3, Col 3) - Right Rounded shape */}
             <div className="col-start-3 col-end-4 row-start-1 row-end-4 relative overflow-hidden bg-stone-100 group cursor-pointer shadow-sm rounded-r-full rounded-l-2xl">
-              <img src={landingImages.community[3] || "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop"} alt="Living room" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img src={mounted && landingImages.community[3] ? landingImages.community[3] : "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop"} alt="Living room" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
 
             {/* Image 5: Loop Bottom (Row 3, Col 2) - Pill shape */}
             <div className="col-start-2 col-end-3 row-start-3 row-end-4 relative overflow-hidden bg-stone-100 group cursor-pointer shadow-sm rounded-full">
-              <img src={landingImages.community[4] || "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop"} alt="Office space" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              <img src={mounted && landingImages.community[4] ? landingImages.community[4] : "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop"} alt="Office space" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
               <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </div>
             

@@ -25,7 +25,7 @@ export default function Footer() {
     return (
       <footer 
         className="pt-20 pb-8 text-stone-300 mt-auto relative bg-stone-900 bg-cover bg-center"
-        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1497250681560-ef03f56d9539?q=80&w=2000")' }}
+        style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2000")' }}
       >
         <div className="absolute inset-0 bg-stone-900/90 backdrop-blur-sm"></div>
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex justify-center py-10">
