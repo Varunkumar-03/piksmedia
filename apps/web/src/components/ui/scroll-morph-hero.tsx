@@ -137,15 +137,19 @@ export default function ScrollMorphHero() {
 
         const fetchImages = async () => {
             try {
+                console.log("FETCHING HERO IMAGES FROM API:", `${API_BASE_URL}/settings/hero-images`);
                 const res = await axios.get(`${API_BASE_URL}/settings/hero-images`);
+                console.log("HERO API RESPONSE RECEIVED:", res.data);
                 if (res.data.data && Array.isArray(res.data.data)) {
                     const merged = DEFAULT_IMAGES.map((defImg, idx) => {
                         const fetched = res.data.data[idx];
                         return (fetched && fetched.trim()) ? fetched : defImg;
                     });
+                    console.log("MERGED HERO IMAGES STATE:", merged);
                     setImages(merged);
                     localStorage.setItem("hero_images", JSON.stringify(merged));
                 } else {
+                    console.log("HERO API RETURNED NO DATA, SETTING STOCK DEFAULTS");
                     setImages(DEFAULT_IMAGES);
                     localStorage.removeItem("hero_images");
                 }

@@ -17,8 +17,7 @@ axios.interceptors.response.use((response) => {
 });
 
 // Central configuration file for the frontend
-export const API_BASE_URL = typeof window !== 'undefined'
-  ? (window.location.hostname.includes('localhost') || window.location.hostname.includes('127.0.0.1')
-      ? 'http://localhost:5000/api/v1'
-      : 'https://api.piksmedia.com/api/v1')
-  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1');
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
+  (typeof window !== 'undefined' && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')
+    ? 'https://api.piksmedia.com/api/v1'
+    : 'http://localhost:5000/api/v1');
