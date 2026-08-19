@@ -13,6 +13,54 @@ import {
   CheckCircle2, XCircle, RefreshCcw, User as UserIcon, ImageIcon, MapPin, List, Search, Zap, Tag, Clock, IndianRupee, Printer, Phone, Home, Check, Star, Mail, Download, ChevronDown, ChevronUp, HelpCircle, ExternalLink, Truck, Play, Eye
 } from 'lucide-react';
 
+const compressImage = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 0.8): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(e.target?.result as string);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        const mimeType = file.type === 'image/gif' ? 'image/gif' : 'image/jpeg';
+        const compressedBase64 = canvas.toDataURL(mimeType, quality);
+        resolve(compressedBase64);
+      };
+      img.onerror = () => {
+        resolve(e.target?.result as string);
+      };
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = () => {
+      resolve('');
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 export default function AdminDashboardPage() {
   const { user, isAuthenticated, logout, token, login } = useAuthStore();
   const router = useRouter();
@@ -878,20 +926,16 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setIsUploadingProfilePhoto(true);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      if (ev.target?.result) {
-        const newUrl = ev.target.result as string;
-        setProfileData({ ...profileData, profilePhoto: newUrl });
-        toast.success('Photo loaded! Click Save Changes to update your profile.');
-        setIsUploadingProfilePhoto(false);
-      }
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read photo file');
+    try {
+      const compressedUrl = await compressImage(file, 400, 400, 0.85);
+      setProfileData({ ...profileData, profilePhoto: compressedUrl });
+      toast.success('Photo loaded and optimized! Click Save Changes to update your profile.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to process photo');
+    } finally {
       setIsUploadingProfilePhoto(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const [orderStatuses, setOrderStatuses] = useState<Record<string, string>>({});
@@ -1314,22 +1358,18 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setUploadingImageIndex(index);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      if (ev.target?.result) {
-        const newUrl = ev.target.result as string;
-        const newImages = [...heroImages];
-        newImages[index] = newUrl;
-        setHeroImages(newImages);
-        toast.success('Image loaded successfully! Remember to click Save Changes.');
-        setUploadingImageIndex(null);
-      }
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read image file');
+    try {
+      const compressedUrl = await compressImage(file, 1200, 1200, 0.8);
+      const newImages = [...heroImages];
+      newImages[index] = compressedUrl;
+      setHeroImages(newImages);
+      toast.success('Image loaded and optimized! Remember to click Save Changes.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to process image');
+    } finally {
       setUploadingImageIndex(null);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleUpdateLandingPageImages = async (e: React.FormEvent) => {
@@ -1386,26 +1426,22 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setUploadingWhyUsImage(fieldPath);
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      if (ev.target?.result) {
-        const imageUrl = ev.target.result as string;
-        if (fieldPath === 'showcase.image1') {
-          setWhyUsSettings((prev: any) => ({ ...prev, showcase: { ...(prev.showcase || {}), image1: imageUrl } }));
-        } else if (fieldPath === 'showcase.image2') {
-          setWhyUsSettings((prev: any) => ({ ...prev, showcase: { ...(prev.showcase || {}), image2: imageUrl } }));
-        } else if (fieldPath === 'founder.image') {
-          setWhyUsSettings((prev: any) => ({ ...prev, founder: { ...(prev.founder || {}), image: imageUrl } }));
-        }
-        toast.success('Image loaded successfully!');
-        setUploadingWhyUsImage(null);
+    try {
+      const compressedUrl = await compressImage(file, 1000, 1000, 0.8);
+      if (fieldPath === 'showcase.image1') {
+        setWhyUsSettings((prev: any) => ({ ...prev, showcase: { ...(prev.showcase || {}), image1: compressedUrl } }));
+      } else if (fieldPath === 'showcase.image2') {
+        setWhyUsSettings((prev: any) => ({ ...prev, showcase: { ...(prev.showcase || {}), image2: compressedUrl } }));
+      } else if (fieldPath === 'founder.image') {
+        setWhyUsSettings((prev: any) => ({ ...prev, founder: { ...(prev.founder || {}), image: compressedUrl } }));
       }
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read image file');
+      toast.success('Image loaded and optimized!');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to process image');
+    } finally {
       setUploadingWhyUsImage(null);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const handleLandingFileUpload = async (section: 'curation' | 'bestSellers' | 'community', index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1413,24 +1449,20 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setUploadingLandingImage({ section, index });
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      if (ev.target?.result) {
-        const newUrl = ev.target.result as string;
-        setLandingPageImages(prev => {
-          const newSection = [...prev[section]];
-          newSection[index] = newUrl;
-          return { ...prev, [section]: newSection };
-        });
-        toast.success('Image loaded successfully! Remember to click Save Changes.');
-        setUploadingLandingImage(null);
-      }
-    };
-    reader.onerror = () => {
-      toast.error('Failed to read image file');
+    try {
+      const compressedUrl = await compressImage(file, 1200, 1200, 0.8);
+      setLandingPageImages(prev => {
+        const newSection = [...prev[section]];
+        newSection[index] = compressedUrl;
+        return { ...prev, [section]: newSection };
+      });
+      toast.success('Image loaded and optimized! Remember to click Save Changes.');
+    } catch (err) {
+      console.error(err);
+      toast.error('Failed to process image');
+    } finally {
       setUploadingLandingImage(null);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const syncActivePincodes = (locs: any[]) => {
