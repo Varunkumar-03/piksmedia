@@ -274,6 +274,13 @@ export const getOrderById = async (req: Request, res: Response): Promise<void> =
           ]
         }).populate('user', 'email').lean();
       }
+      if (!order) {
+        const allDbOrders = await Order.find({}).populate('user', 'email').lean();
+        order = allDbOrders.find(o => {
+          const norm = normalizeOrder(o);
+          return String(norm.orderId || norm._id).toLowerCase() === String(req.params.id).toLowerCase();
+        });
+      }
     } catch (dbErr) {
       console.warn('DB order search warning:', dbErr);
     }
@@ -416,6 +423,13 @@ export const updateOrderStatus = async (req: Request, res: Response): Promise<vo
 
     let order = await Order.findOne({ $or: [{ orderId: req.params.id }, { _id: mongoose.isValidObjectId(req.params.id) ? req.params.id : null }] });
     if (!order) {
+      const allDbOrders = await Order.find({});
+      order = allDbOrders.find(o => {
+        const norm = normalizeOrder(o);
+        return String(norm.orderId || norm._id).toLowerCase() === String(req.params.id).toLowerCase();
+      }) || null;
+    }
+    if (!order) {
       if (orderIdx !== -1) {
         res.status(200).json({ success: true, data: normalizeOrder(localOrders[orderIdx]) });
         return;
@@ -481,6 +495,13 @@ export const updateOrderToReturned = async (req: Request, res: Response): Promis
     }
 
     let order = await Order.findOne({ $or: [{ orderId: req.params.id }, { _id: mongoose.isValidObjectId(req.params.id) ? req.params.id : null }] });
+    if (!order) {
+      const allDbOrders = await Order.find({});
+      order = allDbOrders.find(o => {
+        const norm = normalizeOrder(o);
+        return String(norm.orderId || norm._id).toLowerCase() === String(req.params.id).toLowerCase();
+      }) || null;
+    }
     if (!order) {
       if (orderIdx !== -1) {
         res.status(200).json({ success: true, data: normalizeOrder(localOrders[orderIdx]) });
@@ -586,7 +607,14 @@ export const updateOrderCustomization = async (req: Request, res: Response): Pro
     }
 
     if (mongoose.connection.readyState === 1) {
-      const order = await Order.findOne({ $or: [{ orderId: targetId }, { _id: mongoose.isValidObjectId(targetId) ? targetId : null }] });
+      let order = await Order.findOne({ $or: [{ orderId: targetId }, { _id: mongoose.isValidObjectId(targetId) ? targetId : null }] });
+      if (!order) {
+        const allDbOrders = await Order.find({});
+        order = allDbOrders.find(o => {
+          const norm = normalizeOrder(o);
+          return String(norm.orderId || norm._id).toLowerCase() === targetId.toLowerCase();
+        }) || null;
+      }
       if (order) {
         const dbStatus = String(order.status || 'PENDING').toUpperCase().replace(/\s+/g, '_');
         if (dbStatus === 'PROCESSING' || dbStatus === 'SHIPPED' || dbStatus === 'OUT_FOR_DELIVERY' || dbStatus === 'DELIVERED' || dbStatus === 'CANCELLED') {
