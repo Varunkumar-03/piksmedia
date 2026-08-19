@@ -346,7 +346,7 @@ export default function ScrollMorphHero() {
                             const lineSpacing = isMobile ? Math.max(12, Math.min(22, (containerSize.width || 360) / (numImages + 1))) : 70; 
                             const lineTotalWidth = numImages * lineSpacing;
                             const lineX = i * lineSpacing - lineTotalWidth / 2;
-                            target = { x: lineX, y: 0, rotation: 0, scale: isMobile ? 0.4 : 1, opacity: 1 };
+                            target = { x: lineX, y: 0, rotation: 0, scale: isMobile ? 0.4 : 1, opacity: imagesLoaded ? 1 : 0 };
                         } else {
                             const minDimension = Math.min(containerSize.width, containerSize.height);
                             const circleRadius = isMobile ? Math.min(containerSize.width * 0.44, 160) : Math.min(minDimension * 0.42, 420);
@@ -387,7 +387,7 @@ export default function ScrollMorphHero() {
                                 y: lerp(circlePos.y, arcPos.y, morphValue),
                                 rotation: lerp(circlePos.rotation, arcPos.rotation, morphValue),
                                 scale: lerp(isMobile ? 0.42 : 1, arcPos.scale, morphValue),
-                                opacity: 1,
+                                opacity: imagesLoaded ? 1 : 0,
                             };
                         }
 
