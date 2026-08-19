@@ -5355,7 +5355,7 @@ export default function AdminDashboardPage() {
                           }}
                         >
                           <img 
-                            src={viewingCustomItem.userImage.split(',')[0]} 
+                            src={viewingCustomItem.userImage.split(/,(?=data:)/)[0]} 
                             alt="User custom upload" 
                             className="w-full h-full object-fill"
                           />
@@ -5381,9 +5381,9 @@ export default function AdminDashboardPage() {
               
               <div className="space-y-6 flex-1">
                 <div>
-                  <h4 className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Original Images ({viewingCustomItem.userImage.split(',').filter(Boolean).length})</h4>
+                  <h4 className="text-xs font-bold text-stone-500 uppercase tracking-wider mb-2">Original Images ({viewingCustomItem.userImage.split(/,(?=data:)/).filter(Boolean).length})</h4>
                   {(() => {
-                    const urls = (viewingCustomItem.userImage || '').split(',').filter(Boolean);
+                    const urls = (viewingCustomItem.userImage || '').split(/,(?=data:)/).filter(Boolean);
                     return urls.map((url: string, index: number) => (
                       <div key={index} className="flex items-center gap-4 bg-stone-50 p-4 rounded-xl border border-stone-100 mb-3 last:mb-0">
                         <img src={url} className="w-16 h-16 object-cover rounded-lg shadow-sm border border-stone-200" alt={`Original ${index + 1}`} />

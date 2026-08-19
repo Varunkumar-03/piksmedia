@@ -1064,10 +1064,10 @@ export default function UserDashboardPage() {
                                   {item.userImage && (
                                     <div className="mt-2.5 p-2 rounded-xl bg-amber-50/90 border border-amber-200/90 flex items-center justify-between flex-wrap gap-2 max-w-lg">
                                       <div className="flex items-center gap-2.5">
-                                        <img src={item.userImage.split(',')[0]} alt="Customization" className="w-10 h-10 rounded-lg object-cover border border-amber-300 shadow-2xs" />
+                                        <img src={item.userImage.split(/,(?=data:)/)[0]} alt="Customization" className="w-10 h-10 rounded-lg object-cover border border-amber-300 shadow-2xs" />
                                         <div>
                                           <p className="text-xs font-bold text-amber-950 flex items-center gap-1">
-                                            <Camera className="w-3.5 h-3.5 text-amber-700" /> Customized Photos ({item.userImage.split(',').filter(Boolean).length})
+                                            <Camera className="w-3.5 h-3.5 text-amber-700" /> Customized Photos ({item.userImage.split(/,(?=data:)/).filter(Boolean).length})
                                           </p>
                                           <p className="text-[10px] text-amber-800">Uploaded photos for custom printing</p>
                                         </div>
