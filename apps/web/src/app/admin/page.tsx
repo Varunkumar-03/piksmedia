@@ -1591,25 +1591,9 @@ export default function AdminDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           {/* Header */}
-          <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
-            <div className="flex items-center gap-3 w-full md:w-auto">
-              {/* Hamburger Button on Mobile */}
-              <button 
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="p-2.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 md:hidden text-stone-700 transition-colors shrink-0"
-                title="Toggle Sidebar Menu"
-              >
-                {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
-              <div className="flex items-center justify-center pt-3 pb-1">
-                <img src="/logo.png" alt="Piks Logo" className="h-14 md:h-16 w-auto object-contain drop-shadow-xs" />
-              </div>
-            </div>
-            <div className="flex items-center gap-4 ml-auto">
-              <div className="text-right">
-                <p className="font-semibold text-stone-900">{user.firstName} {user.lastName}</p>
-                <p className="text-[11px] text-stone-500 uppercase tracking-wider font-bold">{user.role}</p>
-              </div>
+          <div className="flex items-center justify-between mb-6 gap-4">
+            {/* Left side: Admin details (Left on mobile, Right on desktop) */}
+            <div className="flex items-center gap-3 order-1 md:order-2 md:ml-auto">
               <div className="w-12 h-12 rounded-full bg-stone-900 text-white flex items-center justify-center font-bold text-xl overflow-hidden shadow-sm shrink-0 border border-stone-200">
                 {user.profilePhoto ? (
                   <img src={user.profilePhoto} alt="Avatar" className="w-full h-full object-cover" />
@@ -1617,6 +1601,26 @@ export default function AdminDashboardPage() {
                   user.firstName?.charAt(0)
                 )}
               </div>
+              <div className="text-left">
+                <p className="font-semibold text-stone-900 leading-tight">{user.firstName} {user.lastName}</p>
+                <p className="text-[11px] text-stone-500 uppercase tracking-wider font-bold">{user.role}</p>
+              </div>
+            </div>
+
+            {/* Desktop Left / Mobile Center: Logo */}
+            <div className="flex items-center justify-center pt-3 pb-1 order-2 md:order-1 md:w-64">
+              <img src="/logo.png" alt="Piks Logo" className="h-14 md:h-16 w-auto object-contain drop-shadow-xs" />
+            </div>
+
+            {/* Right side: Hamburger Menu Button (visible only on mobile) */}
+            <div className="order-3 md:hidden">
+              <button 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition-colors shrink-0"
+                title="Toggle Sidebar Menu"
+              >
+                {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
           </div>
 
