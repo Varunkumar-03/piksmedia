@@ -236,6 +236,13 @@ export default function ScrollMorphHero() {
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
     }, [imagesLoaded]);
 
+    const activeImages = useMemo(() => {
+        const uploaded = images.filter(img => img && img.trim() !== "" && !img.includes("unsplash.com"));
+        return uploaded.length > 0 ? uploaded : images;
+    }, [images]);
+
+    const numImages = activeImages.length;
+
     const [scatterPositions, setScatterPositions] = useState<any[]>([]);
 
     useEffect(() => {
@@ -243,14 +250,14 @@ export default function ScrollMorphHero() {
         const spreadX = isMobile ? containerSize.width * 0.8 : 1200;
         const spreadY = isMobile ? containerSize.height * 0.6 : 800;
 
-        setScatterPositions(images.map(() => ({
+        setScatterPositions(activeImages.map(() => ({
             x: (Math.random() - 0.5) * spreadX,
             y: (Math.random() - 0.5) * spreadY,
             rotation: (Math.random() - 0.5) * 180,
             scale: isMobile ? 0.4 : 0.6,
             opacity: 0,
         })));
-    }, [images, containerSize]);
+    }, [activeImages, containerSize]);
 
     const [morphValue, setMorphValue] = useState(0);
     const [rotateValue, setRotateValue] = useState(0);
@@ -326,21 +333,21 @@ export default function ScrollMorphHero() {
 
                 {/* Main Container for 3D Morph Images */}
                 <div className="relative flex items-center justify-center w-full h-full overflow-hidden">
-                    {images.slice(0, TOTAL_IMAGES).map((src, i) => {
+                    {activeImages.map((src, i) => {
                         let target = { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1 };
                         const isMobile = containerSize.width > 0 && containerSize.width < 768;
 
                         if (introPhase === "scatter") {
                             target = scatterPositions[i] || { x: 0, y: 0, rotation: 0, scale: isMobile ? 0.35 : 0.6, opacity: 0 };
                         } else if (introPhase === "line") {
-                            const lineSpacing = isMobile ? Math.max(12, Math.min(22, (containerSize.width || 360) / (TOTAL_IMAGES + 1))) : 70; 
-                            const lineTotalWidth = TOTAL_IMAGES * lineSpacing;
+                            const lineSpacing = isMobile ? Math.max(12, Math.min(22, (containerSize.width || 360) / (numImages + 1))) : 70; 
+                            const lineTotalWidth = numImages * lineSpacing;
                             const lineX = i * lineSpacing - lineTotalWidth / 2;
                             target = { x: lineX, y: 0, rotation: 0, scale: isMobile ? 0.4 : 1, opacity: 1 };
                         } else {
                             const minDimension = Math.min(containerSize.width, containerSize.height);
                             const circleRadius = isMobile ? Math.min(containerSize.width * 0.44, 160) : Math.min(minDimension * 0.42, 420);
-                            const circleAngle = (i / TOTAL_IMAGES) * 360;
+                            const circleAngle = (i / numImages) * 360;
                             const circleRad = (circleAngle * Math.PI) / 180;
                             const circlePos = {
                                 x: Math.cos(circleRad) * circleRadius,
@@ -356,7 +363,7 @@ export default function ScrollMorphHero() {
 
                             const spreadAngle = isMobile ? 85 : 130;
                             const startAngle = -90 - (spreadAngle / 2);
-                            const step = spreadAngle / (TOTAL_IMAGES - 1);
+                            const step = spreadAngle / Math.max(1, numImages - 1);
 
                             const scrollProgress = Math.min(Math.max(rotateValue / 360, 0), 1);
                             const maxRotation = spreadAngle * 0.8; 
@@ -386,7 +393,7 @@ export default function ScrollMorphHero() {
                                 key={i}
                                 src={src}
                                 index={i}
-                                total={TOTAL_IMAGES}
+                                total={numImages}
                                 phase={introPhase}
                                 target={target}
                             />
