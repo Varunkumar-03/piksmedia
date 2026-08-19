@@ -82,11 +82,20 @@ export default function Home() {
     setMounted(true);
     axios.get(`${API_BASE_URL}/settings/landing-page-images`)
       .then(res => {
-        if (res.data.data) {
+        if (res.data?.data) {
           const merged = {
-            curation: defaultLandingImages.curation.map((def, idx) => (res.data.data.curation?.[idx]?.trim() ? res.data.data.curation[idx] : def)),
-            bestSellers: defaultLandingImages.bestSellers.map((def, idx) => (res.data.data.bestSellers?.[idx]?.trim() ? res.data.data.bestSellers[idx] : def)),
-            community: defaultLandingImages.community.map((def, idx) => (res.data.data.community?.[idx]?.trim() ? res.data.data.community[idx] : def))
+            curation: defaultLandingImages.curation.map((def, idx) => {
+              const fetched = res.data.data.curation?.[idx];
+              return (fetched && fetched.trim() !== "" && !fetched.includes('/uploads/') && !fetched.includes('1520333789090-1afc82db536a')) ? fetched : def;
+            }),
+            bestSellers: defaultLandingImages.bestSellers.map((def, idx) => {
+              const fetched = res.data.data.bestSellers?.[idx];
+              return (fetched && fetched.trim() !== "" && !fetched.includes('/uploads/') && !fetched.includes('1577083165275-c0f5f7eb75bb')) ? fetched : def;
+            }),
+            community: defaultLandingImages.community.map((def, idx) => {
+              const fetched = res.data.data.community?.[idx];
+              return (fetched && fetched.trim() !== "" && !fetched.includes('/uploads/') && !fetched.includes('1497366216548-37526070297c')) ? fetched : def;
+            })
           };
           setLandingImages(merged);
         }

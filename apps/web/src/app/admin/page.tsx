@@ -436,9 +436,40 @@ export default function AdminDashboardPage() {
           setHeroImages(res.data.data);
         }
       } else if (activeTab === 'landing') {
-        const res = await axios.get(`${API_BASE_URL}/settings/landing-page-images`, { validateStatus: () => true }).catch(() => ({ data: { data: [] } }));
+        const res = await axios.get(`${API_BASE_URL}/settings/landing-page-images`, { validateStatus: () => true }).catch(() => ({ data: { data: {} } }));
         if (res.data?.data) {
-          setLandingPageImages(res.data.data);
+          const val = res.data.data;
+          const defaultCuration = [
+            "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=2000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=2000&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop"
+          ];
+          const defaultBestSellers = [
+            "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=800&auto=format&fit=crop"
+          ];
+          const defaultCommunity = [
+            "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop",
+            "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800&auto=format&fit=crop"
+          ];
+
+          const sanitized = {
+            curation: (val.curation || Array(4).fill('')).map((img: string, idx: number) => 
+              (img && img.trim() !== "" && !img.includes('/uploads/') && !img.includes('1520333789090-1afc82db536a')) ? img : defaultCuration[idx]
+            ),
+            bestSellers: (val.bestSellers || Array(3).fill('')).map((img: string, idx: number) => 
+              (img && img.trim() !== "" && !img.includes('/uploads/') && !img.includes('1577083165275-c0f5f7eb75bb')) ? img : defaultBestSellers[idx]
+            ),
+            community: (val.community || Array(5).fill('')).map((img: string, idx: number) => 
+              (img && img.trim() !== "" && !img.includes('/uploads/') && !img.includes('1497366216548-37526070297c')) ? img : defaultCommunity[idx]
+            )
+          };
+          setLandingPageImages(sanitized);
         }
       } else if (activeTab === 'testimonials') {
         const res = await axios.get(`${API_BASE_URL}/settings/testimonials`, { validateStatus: () => true }).catch(() => ({ data: { data: [] } }));
