@@ -61,6 +61,15 @@ const compressImage = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 
   });
 };
 
+const sanitizeImageUrl = (url: string) => {
+  if (!url) return '';
+  if (url.startsWith('/uploads/')) {
+    const root = API_BASE_URL.replace('/api/v1', '');
+    return `${root}${url}`;
+  }
+  return url;
+};
+
 export default function AdminDashboardPage() {
   const { user, isAuthenticated, logout, token, login } = useAuthStore();
   const router = useRouter();
@@ -458,15 +467,15 @@ export default function AdminDashboardPage() {
             "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800&auto=format&fit=crop"
           ];
 
-          const sanitized = {
+           const sanitized = {
             curation: (val.curation || Array(4).fill('')).map((img: string, idx: number) => 
-              (img && img.trim() !== "" && !img.includes('/uploads/') && !img.includes('1520333789090-1afc82db536a')) ? img : defaultCuration[idx]
+              (img && img.trim() !== "" && !img.includes('1520333789090-1afc82db536a')) ? sanitizeImageUrl(img) : defaultCuration[idx]
             ),
             bestSellers: (val.bestSellers || Array(3).fill('')).map((img: string, idx: number) => 
-              (img && img.trim() !== "" && !img.includes('/uploads/') && !img.includes('1577083165275-c0f5f7eb75bb')) ? img : defaultBestSellers[idx]
+              (img && img.trim() !== "" && !img.includes('1577083165275-c0f5f7eb75bb')) ? sanitizeImageUrl(img) : defaultBestSellers[idx]
             ),
             community: (val.community || Array(5).fill('')).map((img: string, idx: number) => 
-              (img && img.trim() !== "" && !img.includes('/uploads/') && !img.includes('1497366216548-37526070297c')) ? img : defaultCommunity[idx]
+              (img && img.trim() !== "" && !img.includes('1497366216548-37526070297c')) ? sanitizeImageUrl(img) : defaultCommunity[idx]
             )
           };
           setLandingPageImages(sanitized);

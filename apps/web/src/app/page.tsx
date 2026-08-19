@@ -11,6 +11,15 @@ import axios from 'axios';
 import ScrollMorphHero from '../components/ui/scroll-morph-hero';
 import Navbar from '../components/Navbar';
 
+const sanitizeImageUrl = (url: string) => {
+  if (!url) return '';
+  if (url.startsWith('/uploads/')) {
+    const root = API_BASE_URL.replace('/api/v1', '');
+    return `${root}${url}`;
+  }
+  return url;
+};
+
 export default function Home() {
   const { user, isAuthenticated, logout } = useAuthStore();
   const itemCount = useCartStore((state) => state.itemCount());
@@ -86,15 +95,15 @@ export default function Home() {
           const merged = {
             curation: defaultLandingImages.curation.map((def, idx) => {
               const fetched = res.data.data.curation?.[idx];
-              return (fetched && fetched.trim() !== "" && !fetched.includes('/uploads/') && !fetched.includes('1520333789090-1afc82db536a')) ? fetched : def;
+              return (fetched && fetched.trim() !== "" && !fetched.includes('1520333789090-1afc82db536a')) ? sanitizeImageUrl(fetched) : def;
             }),
             bestSellers: defaultLandingImages.bestSellers.map((def, idx) => {
               const fetched = res.data.data.bestSellers?.[idx];
-              return (fetched && fetched.trim() !== "" && !fetched.includes('/uploads/') && !fetched.includes('1577083165275-c0f5f7eb75bb')) ? fetched : def;
+              return (fetched && fetched.trim() !== "" && !fetched.includes('1577083165275-c0f5f7eb75bb')) ? sanitizeImageUrl(fetched) : def;
             }),
             community: defaultLandingImages.community.map((def, idx) => {
               const fetched = res.data.data.community?.[idx];
-              return (fetched && fetched.trim() !== "" && !fetched.includes('/uploads/') && !fetched.includes('1497366216548-37526070297c')) ? fetched : def;
+              return (fetched && fetched.trim() !== "" && !fetched.includes('1497366216548-37526070297c')) ? sanitizeImageUrl(fetched) : def;
             })
           };
           setLandingImages(merged);
