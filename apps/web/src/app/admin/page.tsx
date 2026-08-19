@@ -1592,8 +1592,13 @@ export default function AdminDashboardPage() {
           
           {/* Header */}
           <div className="flex items-center justify-between mb-6 gap-4">
-            {/* Left side: Admin details (Left on mobile, Right on desktop) */}
-            <div className="flex items-center gap-3 order-1 md:order-2 md:ml-auto">
+            {/* 1. Logo (Left on both mobile & desktop) */}
+            <div className="flex items-center justify-start pt-3 pb-1 md:w-64">
+              <img src="/logo.png" alt="Piks Logo" className="h-14 md:h-16 w-auto object-contain drop-shadow-xs" />
+            </div>
+
+            {/* 2. Admin details (Center/Right on mobile, Right on desktop) */}
+            <div className="flex items-center gap-3 md:ml-auto">
               <div className="w-12 h-12 rounded-full bg-stone-900 text-white flex items-center justify-center font-bold text-xl overflow-hidden shadow-sm shrink-0 border border-stone-200">
                 {user.profilePhoto ? (
                   <img src={user.profilePhoto} alt="Avatar" className="w-full h-full object-cover" />
@@ -1607,13 +1612,8 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Desktop Left / Mobile Center: Logo */}
-            <div className="flex items-center justify-center pt-3 pb-1 order-2 md:order-1 md:w-64">
-              <img src="/logo.png" alt="Piks Logo" className="h-14 md:h-16 w-auto object-contain drop-shadow-xs" />
-            </div>
-
-            {/* Right side: Hamburger Menu Button (visible only on mobile) */}
-            <div className="order-3 md:hidden">
+            {/* 3. Hamburger Menu Button (visible only on mobile, far right) */}
+            <div className="md:hidden">
               <button 
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 className="p-2.5 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 text-stone-700 transition-colors shrink-0"
