@@ -58,6 +58,32 @@ const seedData = async () => {
       await Category.insertMany(defaultCategories);
       console.log('Seeded default categories into MongoDB database');
     }
+
+    // Migration: Fix existing duplicate/random orderId values in MongoDB database
+    try {
+      const Order = mongoose.model('Order');
+      const allDbOrders = await Order.find({}).sort({ createdAt: 1 });
+      
+      const countsByMonth: Record<string, number> = {};
+      for (const order of allDbOrders) {
+        const date = order.createdAt ? new Date(order.createdAt) : new Date();
+        const yy = String(date.getFullYear()).slice(-2);
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const monthPrefix = `PKM-${yy}${mm}-`;
+        
+        countsByMonth[monthPrefix] = (countsByMonth[monthPrefix] || 0) + 1;
+        const seq = String(countsByMonth[monthPrefix]).padStart(3, '0');
+        const expectedId = `${monthPrefix}${seq}`;
+        
+        if (order.orderId !== expectedId) {
+          console.log(`Migrating order ID from "${order.orderId}" to "${expectedId}"`);
+          order.orderId = expectedId;
+          await order.save();
+        }
+      }
+    } catch (migrateErr) {
+      console.error('Asynchronous order ID migration failed:', migrateErr);
+    }
   } catch (err) {
     console.error('Asynchronous seeding check failed:', err);
   }

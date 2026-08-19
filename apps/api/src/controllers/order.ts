@@ -33,25 +33,7 @@ const normalizeOrder = (o: any): any => {
   const rawObj = typeof o.toObject === 'function' ? o.toObject({ getters: false, virtuals: false }) : { ...o };
   const orderObj = JSON.parse(JSON.stringify(rawObj));
 
-  let cleanOrderId = orderObj.orderId;
-  if (!cleanOrderId || !String(cleanOrderId).startsWith('PKM-') || (cleanOrderId === 'PKM-2608-001' && orderObj._id && String(orderObj._id).length >= 24)) {
-    if (orderObj._id && String(orderObj._id).startsWith('PKM-')) {
-      cleanOrderId = String(orderObj._id);
-    } else {
-      const date = orderObj.createdAt ? new Date(orderObj.createdAt) : new Date();
-      const yy = String(date.getFullYear()).slice(-2);
-      const mm = String(date.getMonth() + 1).padStart(2, '0');
-      let seq = '001';
-      if (orderObj._id) {
-        const idStr = String(orderObj._id);
-        if (idStr.length >= 24) {
-          const num = (parseInt(idStr.slice(-4), 16) % 900) + 100;
-          seq = String(num);
-        }
-      }
-      cleanOrderId = `PKM-${yy}${mm}-${seq}`;
-    }
-  }
+  let cleanOrderId = orderObj.orderId || orderObj._id || 'PKM-UNKNOWN';
 
   return {
     ...orderObj,
