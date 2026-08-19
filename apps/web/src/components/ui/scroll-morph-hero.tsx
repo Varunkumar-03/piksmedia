@@ -115,7 +115,7 @@ export default function ScrollMorphHero() {
     const [introPhase, setIntroPhase] = useState<AnimationPhase>("scatter");
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
-    const [images, setImages] = useState<string[]>(DEFAULT_IMAGES);
+    const [images, setImages] = useState<string[]>([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
 
     useEffect(() => {
@@ -128,9 +128,12 @@ export default function ScrollMorphHero() {
                         return (fetched && fetched.trim()) ? fetched : defImg;
                     });
                     setImages(merged);
+                } else {
+                    setImages(DEFAULT_IMAGES);
                 }
             } catch (error) {
                 console.error('Failed to fetch hero images', error);
+                setImages(DEFAULT_IMAGES);
             } finally {
                 setImagesLoaded(true);
             }
