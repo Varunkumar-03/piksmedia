@@ -231,10 +231,13 @@ export default function ScrollMorphHero() {
     }, [mouseX]);
 
     useEffect(() => {
+        if (!imagesLoaded) return;
+        
+        setIntroPhase("scatter");
         const timer1 = setTimeout(() => setIntroPhase("line"), 300);
         const timer2 = setTimeout(() => setIntroPhase("circle"), 1200);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
-    }, []);
+    }, [imagesLoaded]);
 
     const activeImages = useMemo(() => {
         const uploaded = images.filter(img => img && img.trim() !== "" && !img.includes("unsplash.com"));
