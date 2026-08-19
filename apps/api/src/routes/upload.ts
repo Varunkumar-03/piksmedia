@@ -36,16 +36,18 @@ const upload = multer({
 });
 
 // POST /api/v1/upload
-router.post('/', optionalProtect, upload.single('file'), (req: Request, res: Response) => {
+router.post('/', optionalProtect, upload.any(), (req: Request, res: Response) => {
   try {
-    if (!req.file) {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files || files.length === 0) {
       res.status(400).json({ success: false, error: 'No file uploaded' });
       return;
     }
+    const uploadedFile = files[0];
     
     const host = req.get('host') || 'localhost:5000';
     const protocol = req.protocol || 'http';
-    const fileUrl = `${protocol}://${host}/uploads/${req.file.filename}`;
+    const fileUrl = `${protocol}://${host}/uploads/${uploadedFile.filename}`;
     res.status(200).json({ success: true, url: fileUrl });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
