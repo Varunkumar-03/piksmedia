@@ -116,6 +116,7 @@ export default function ScrollMorphHero() {
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
     const [images, setImages] = useState<string[]>(DEFAULT_IMAGES);
+    const [imagesLoaded, setImagesLoaded] = useState(false);
 
     useEffect(() => {
         const fetchImages = async () => {
@@ -130,6 +131,8 @@ export default function ScrollMorphHero() {
                 }
             } catch (error) {
                 console.error('Failed to fetch hero images', error);
+            } finally {
+                setImagesLoaded(true);
             }
         };
         fetchImages();
@@ -225,10 +228,13 @@ export default function ScrollMorphHero() {
     }, [mouseX]);
 
     useEffect(() => {
+        if (!imagesLoaded) return;
+        
+        setIntroPhase("scatter");
         const timer1 = setTimeout(() => setIntroPhase("line"), 300);
         const timer2 = setTimeout(() => setIntroPhase("circle"), 1200);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
-    }, []);
+    }, [imagesLoaded]);
 
     const [scatterPositions, setScatterPositions] = useState<any[]>([]);
 
