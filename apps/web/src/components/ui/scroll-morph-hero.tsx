@@ -117,8 +117,26 @@ export default function ScrollMorphHero() {
     const containerRef = useRef<HTMLDivElement>(null);
     const [images, setImages] = useState<string[]>([]);
     const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        const cached = typeof window !== 'undefined' ? localStorage.getItem("hero_images") : null;
+        if (cached) {
+            try {
+                const parsed = JSON.parse(cached);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setImages(parsed);
+                } else {
+                    setImages(DEFAULT_IMAGES);
+                }
+            } catch (e) {
+                setImages(DEFAULT_IMAGES);
+            }
+        } else {
+            setImages(DEFAULT_IMAGES);
+        }
+        setMounted(true);
+
         const fetchImages = async () => {
             try {
                 const res = await axios.get(`${API_BASE_URL}/settings/hero-images`);
@@ -128,12 +146,14 @@ export default function ScrollMorphHero() {
                         return (fetched && fetched.trim()) ? fetched : defImg;
                     });
                     setImages(merged);
+                    localStorage.setItem("hero_images", JSON.stringify(merged));
                 } else {
                     setImages(DEFAULT_IMAGES);
+                    localStorage.removeItem("hero_images");
                 }
             } catch (error) {
                 console.error('Failed to fetch hero images', error);
-                setImages(DEFAULT_IMAGES);
+                // Keep cached if load fails
             } finally {
                 setImagesLoaded(true);
             }
@@ -287,7 +307,7 @@ export default function ScrollMorphHero() {
     const isMobileView = containerSize.width > 0 && containerSize.width < 768;
 
     return (
-        <div ref={containerRef} className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] overflow-hidden -mt-14 sm:-mt-20">
+        <div ref={containerRef} style={{ opacity: mounted ? 1 : 0 }} className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] overflow-hidden -mt-14 sm:-mt-20">
             {/* Background elements */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <div className="absolute top-[-20%] left-[-10%] w-[70vw] h-[70vw] bg-orange-100 rounded-full blur-[120px] opacity-60 mix-blend-multiply"></div>
