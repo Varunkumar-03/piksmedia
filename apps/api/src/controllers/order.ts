@@ -34,7 +34,7 @@ const normalizeOrder = (o: any): any => {
   const orderObj = JSON.parse(JSON.stringify(rawObj));
 
   let cleanOrderId = orderObj.orderId;
-  if (!cleanOrderId || !String(cleanOrderId).startsWith('PKM-')) {
+  if (!cleanOrderId || !String(cleanOrderId).startsWith('PKM-') || (cleanOrderId === 'PKM-2608-001' && orderObj._id && String(orderObj._id).length >= 24)) {
     if (orderObj._id && String(orderObj._id).startsWith('PKM-')) {
       cleanOrderId = String(orderObj._id);
     } else {
@@ -147,7 +147,16 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
       : (reqUserId || undefined);
 
     const localOrders = readLocalOrders();
-    const newOrderId = generateNextOrderId(localOrders);
+    let allOrders = [...localOrders];
+    if (mongoose.connection.readyState === 1) {
+      try {
+        const dbOrders = await Order.find({}).select('orderId _id').lean();
+        allOrders = [...allOrders, ...dbOrders];
+      } catch (dbErr) {
+        console.error('Error fetching DB orders for next ID generation:', dbErr);
+      }
+    }
+    const newOrderId = generateNextOrderId(allOrders);
 
     const newOrderObj = {
       _id: newOrderId,
