@@ -36,22 +36,30 @@ const upload = multer({
 });
 
 // POST /api/v1/upload
-router.post('/', optionalProtect, upload.any(), (req: Request, res: Response) => {
-  try {
-    const files = req.files as Express.Multer.File[] | undefined;
-    if (!files || files.length === 0) {
-      res.status(400).json({ success: false, error: 'No file uploaded' });
+router.post('/', optionalProtect, (req: Request, res: Response) => {
+  upload.any()(req, res, (err: any) => {
+    if (err) {
+      console.error('Multer upload error:', err);
+      res.status(400).json({ success: false, error: err.message || 'File upload failed' });
       return;
     }
-    const uploadedFile = files[0];
     
-    const host = req.get('host') || 'localhost:5000';
-    const protocol = req.protocol || 'http';
-    const fileUrl = `${protocol}://${host}/uploads/${uploadedFile.filename}`;
-    res.status(200).json({ success: true, url: fileUrl });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+    try {
+      const files = req.files as Express.Multer.File[] | undefined;
+      if (!files || files.length === 0) {
+        res.status(400).json({ success: false, error: 'No file uploaded' });
+        return;
+      }
+      const uploadedFile = files[0];
+      
+      const host = req.get('host') || 'localhost:5000';
+      const protocol = req.protocol || 'http';
+      const fileUrl = `${protocol}://${host}/uploads/${uploadedFile.filename}`;
+      res.status(200).json({ success: true, url: fileUrl });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
 });
 
 export default router;

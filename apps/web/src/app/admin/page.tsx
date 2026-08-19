@@ -890,9 +890,10 @@ export default function AdminDashboardPage() {
       const newUrl = res.data.url;
       setProfileData({ ...profileData, profilePhoto: newUrl });
       toast.success('Photo uploaded! Click Save Changes to update your profile.');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading profile photo', error);
-      toast.error('Failed to upload photo');
+      const errMsg = error.response?.data?.error || error.message || 'Failed to upload photo';
+      toast.error(errMsg);
     } finally {
       setIsUploadingProfilePhoto(false);
     }
@@ -1334,9 +1335,10 @@ export default function AdminDashboardPage() {
       newImages[index] = newUrl;
       setHeroImages(newImages);
       toast.success('Image uploaded successfully! Remember to click Save Changes.');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file', error);
-      toast.error('Failed to upload image');
+      const errMsg = error.response?.data?.error || error.message || 'Failed to upload image';
+      toast.error(errMsg);
     } finally {
       setUploadingImageIndex(null);
     }
@@ -1417,9 +1419,10 @@ export default function AdminDashboardPage() {
         }
         toast.success('Image uploaded successfully!');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to upload image', error);
-      toast.error('Failed to upload image');
+      const errMsg = error.response?.data?.error || error.message || 'Failed to upload image';
+      toast.error(errMsg);
     } finally {
       setUploadingWhyUsImage(null);
     }
@@ -1448,9 +1451,10 @@ export default function AdminDashboardPage() {
         return { ...prev, [section]: newSection };
       });
       toast.success('Image uploaded successfully! Remember to click Save Changes.');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error uploading file', error);
-      toast.error('Failed to upload image');
+      const errMsg = error.response?.data?.error || error.message || 'Failed to upload image';
+      toast.error(errMsg);
     } finally {
       setUploadingLandingImage(null);
     }
