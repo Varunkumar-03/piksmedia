@@ -228,13 +228,10 @@ export default function ScrollMorphHero() {
     }, [mouseX]);
 
     useEffect(() => {
-        if (!imagesLoaded) return;
-        
-        setIntroPhase("scatter");
         const timer1 = setTimeout(() => setIntroPhase("line"), 300);
         const timer2 = setTimeout(() => setIntroPhase("circle"), 1200);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
-    }, [imagesLoaded]);
+    }, []);
 
     const activeImages = useMemo(() => {
         const uploaded = images.filter(img => img && img.trim() !== "" && !img.includes("unsplash.com"));
@@ -294,15 +291,7 @@ export default function ScrollMorphHero() {
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
             </div>
 
-            {!imagesLoaded ? (
-                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#FDFBF7]/80 backdrop-blur-md">
-                    <div className="animate-pulse flex flex-col items-center gap-4">
-                        <div className="h-8 w-48 bg-stone-200/60 rounded-full"></div>
-                        <div className="h-4 w-32 bg-stone-200/40 rounded-full"></div>
-                    </div>
-                </div>
-            ) : (
-                <div className="flex h-full w-full flex-col items-center justify-center perspective-1000 relative z-10 overflow-hidden">
+            <div className="flex h-full w-full flex-col items-center justify-center perspective-1000 relative z-10 overflow-hidden">
                 
                 {/* Intro Text (Fades out) */}
                 <div className="absolute z-0 flex flex-col items-center justify-center text-center pointer-events-none top-1/2 -translate-y-1/2 w-full px-4 sm:px-6">
@@ -415,7 +404,6 @@ export default function ScrollMorphHero() {
                     })}
                 </div>
             </div>
-            )}
         </div>
     );
 }
