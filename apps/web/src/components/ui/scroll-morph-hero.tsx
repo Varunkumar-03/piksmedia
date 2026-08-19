@@ -238,7 +238,13 @@ export default function ScrollMorphHero() {
 
     const activeImages = useMemo(() => {
         const uploaded = images.filter(img => img && img.trim() !== "" && !img.includes("unsplash.com"));
-        return uploaded.length > 0 ? uploaded : images;
+        if (uploaded.length === 0) return images;
+        
+        const repeated: string[] = [];
+        for (let i = 0; i < 20; i++) {
+            repeated.push(uploaded[i % uploaded.length]);
+        }
+        return repeated;
     }, [images]);
 
     const numImages = activeImages.length;
