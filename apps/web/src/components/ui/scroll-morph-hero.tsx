@@ -279,6 +279,17 @@ export default function ScrollMorphHero() {
 
     const isMobileView = containerSize.width > 0 && containerSize.width < 768;
 
+    if (!imagesLoaded) {
+        return (
+            <div className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] flex flex-col items-center justify-center -mt-14 sm:-mt-20">
+                <div className="animate-pulse flex flex-col items-center gap-4">
+                    <div className="h-8 w-48 bg-stone-200/60 rounded-full"></div>
+                    <div className="h-4 w-32 bg-stone-200/40 rounded-full"></div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div ref={containerRef} className="relative w-full h-[520px] sm:h-[650px] md:h-[800px] bg-[#FDFBF7] overflow-hidden -mt-14 sm:-mt-20">
             {/* Background elements */}
