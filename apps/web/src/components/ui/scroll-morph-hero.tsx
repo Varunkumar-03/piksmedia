@@ -115,26 +115,24 @@ export default function ScrollMorphHero() {
     const [introPhase, setIntroPhase] = useState<AnimationPhase>("scatter");
     const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
     const containerRef = useRef<HTMLDivElement>(null);
-    const [images, setImages] = useState<string[]>([]);
-    const [imagesLoaded, setImagesLoaded] = useState(false);
+    const [images, setImages] = useState<string[]>(() => {
+        if (typeof window !== 'undefined') {
+            const cached = localStorage.getItem("hero_images");
+            if (cached) {
+                try {
+                    const parsed = JSON.parse(cached);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed;
+                    }
+                } catch (e) {}
+            }
+        }
+        return DEFAULT_IMAGES;
+    });
+    const [imagesLoaded, setImagesLoaded] = useState(true);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        const cached = typeof window !== 'undefined' ? localStorage.getItem("hero_images") : null;
-        if (cached) {
-            try {
-                const parsed = JSON.parse(cached);
-                if (Array.isArray(parsed) && parsed.length > 0) {
-                    setImages(parsed);
-                } else {
-                    setImages(DEFAULT_IMAGES);
-                }
-            } catch (e) {
-                setImages(DEFAULT_IMAGES);
-            }
-        } else {
-            setImages(DEFAULT_IMAGES);
-        }
         setMounted(true);
 
         const fetchImages = async () => {
@@ -153,9 +151,6 @@ export default function ScrollMorphHero() {
                 }
             } catch (error) {
                 console.error('Failed to fetch hero images', error);
-                // Keep cached if load fails
-            } finally {
-                setImagesLoaded(true);
             }
         };
         fetchImages();
@@ -251,13 +246,10 @@ export default function ScrollMorphHero() {
     }, [mouseX]);
 
     useEffect(() => {
-        if (!imagesLoaded) return;
-        
-        setIntroPhase("scatter");
         const timer1 = setTimeout(() => setIntroPhase("line"), 300);
         const timer2 = setTimeout(() => setIntroPhase("circle"), 1200);
         return () => { clearTimeout(timer1); clearTimeout(timer2); };
-    }, [imagesLoaded]);
+    }, []);
 
     const activeImages = useMemo(() => {
         const uploaded = images.filter(img => img && img.trim() !== "" && !img.includes("unsplash.com"));
