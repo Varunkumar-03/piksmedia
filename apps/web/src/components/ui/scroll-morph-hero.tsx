@@ -252,20 +252,18 @@ export default function ScrollMorphHero() {
 
     const numImages = activeImages.length;
 
-    const [scatterPositions, setScatterPositions] = useState<any[]>([]);
-
-    useEffect(() => {
+    const scatterPositions = useMemo(() => {
         const isMobile = containerSize.width > 0 && containerSize.width < 768;
         const spreadX = isMobile ? containerSize.width * 0.8 : 1200;
         const spreadY = isMobile ? containerSize.height * 0.6 : 800;
 
-        setScatterPositions(activeImages.map(() => ({
-            x: (Math.random() - 0.5) * spreadX,
-            y: (Math.random() - 0.5) * spreadY,
-            rotation: (Math.random() - 0.5) * 180,
+        return activeImages.map((_, idx) => ({
+            x: ((idx * 0.17) % 1 - 0.5) * spreadX,
+            y: ((idx * 0.23) % 1 - 0.5) * spreadY,
+            rotation: ((idx * 0.31) % 1 - 0.5) * 180,
             scale: isMobile ? 0.4 : 0.6,
             opacity: 0,
-        })));
+        }));
     }, [activeImages, containerSize]);
 
     const [morphValue, setMorphValue] = useState(0);
