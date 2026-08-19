@@ -105,12 +105,12 @@ export const DEFAULT_LANDING_PAGE_IMAGES = {
   curation: [
     "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=2000&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=2000&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1520333789090-1afc82db536a?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop"
   ],
   bestSellers: [
     "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1577083165275-c0f5f7eb75bb?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=800&auto=format&fit=crop"
   ],
   community: [
@@ -118,7 +118,7 @@ export const DEFAULT_LANDING_PAGE_IMAGES = {
     "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop",
     "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop"
+    "https://images.unsplash.com/photo-1524758631624-e2822e304c36?q=80&w=800&auto=format&fit=crop"
   ]
 };
 
@@ -137,7 +137,20 @@ export const getLandingPageImages = async (req: Request, res: Response): Promise
       return;
     }
 
-    res.status(200).json({ success: true, data: setting.value });
+    const val = setting.value || {};
+    const sanitized = {
+      curation: (val.curation || []).map((img: string, idx: number) => 
+        (img && img.trim() !== "" && !img.includes('/uploads/proof-') && !img.includes('1520333789090-1afc82db536a')) ? img : DEFAULT_LANDING_PAGE_IMAGES.curation[idx]
+      ),
+      bestSellers: (val.bestSellers || []).map((img: string, idx: number) => 
+        (img && img.trim() !== "" && !img.includes('/uploads/proof-') && !img.includes('1577083165275-c0f5f7eb75bb')) ? img : DEFAULT_LANDING_PAGE_IMAGES.bestSellers[idx]
+      ),
+      community: (val.community || []).map((img: string, idx: number) => 
+        (img && img.trim() !== "" && !img.includes('/uploads/proof-') && !img.includes('1497366216548-37526070297c')) ? img : DEFAULT_LANDING_PAGE_IMAGES.community[idx]
+      )
+    };
+
+    res.status(200).json({ success: true, data: sanitized });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }
