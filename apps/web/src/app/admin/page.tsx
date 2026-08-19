@@ -878,27 +878,20 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setIsUploadingProfilePhoto(true);
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const res = await axios.post(`${API_BASE_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      const newUrl = res.data.url;
-      setProfileData({ ...profileData, profilePhoto: newUrl });
-      toast.success('Photo uploaded! Click Save Changes to update your profile.');
-    } catch (error: any) {
-      console.error('Error uploading profile photo', error);
-      const errMsg = error.response?.data?.error || error.message || 'Failed to upload photo';
-      toast.error(errMsg);
-    } finally {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      if (ev.target?.result) {
+        const newUrl = ev.target.result as string;
+        setProfileData({ ...profileData, profilePhoto: newUrl });
+        toast.success('Photo loaded! Click Save Changes to update your profile.');
+        setIsUploadingProfilePhoto(false);
+      }
+    };
+    reader.onerror = () => {
+      toast.error('Failed to read photo file');
       setIsUploadingProfilePhoto(false);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   const [orderStatuses, setOrderStatuses] = useState<Record<string, string>>({});
@@ -1321,29 +1314,22 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setUploadingImageIndex(index);
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const res = await axios.post(`${API_BASE_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      const newUrl = res.data.url;
-      const newImages = [...heroImages];
-      newImages[index] = newUrl;
-      setHeroImages(newImages);
-      toast.success('Image uploaded successfully! Remember to click Save Changes.');
-    } catch (error: any) {
-      console.error('Error uploading file', error);
-      const errMsg = error.response?.data?.error || error.message || 'Failed to upload image';
-      toast.error(errMsg);
-    } finally {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      if (ev.target?.result) {
+        const newUrl = ev.target.result as string;
+        const newImages = [...heroImages];
+        newImages[index] = newUrl;
+        setHeroImages(newImages);
+        toast.success('Image loaded successfully! Remember to click Save Changes.');
+        setUploadingImageIndex(null);
+      }
+    };
+    reader.onerror = () => {
+      toast.error('Failed to read image file');
       setUploadingImageIndex(null);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleUpdateLandingPageImages = async (e: React.FormEvent) => {
@@ -1400,18 +1386,10 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setUploadingWhyUsImage(fieldPath);
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const res = await axios.post(`${API_BASE_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      if (res.data.success && res.data.url) {
-        const imageUrl = res.data.url;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      if (ev.target?.result) {
+        const imageUrl = ev.target.result as string;
         if (fieldPath === 'showcase.image1') {
           setWhyUsSettings((prev: any) => ({ ...prev, showcase: { ...(prev.showcase || {}), image1: imageUrl } }));
         } else if (fieldPath === 'showcase.image2') {
@@ -1419,15 +1397,15 @@ export default function AdminDashboardPage() {
         } else if (fieldPath === 'founder.image') {
           setWhyUsSettings((prev: any) => ({ ...prev, founder: { ...(prev.founder || {}), image: imageUrl } }));
         }
-        toast.success('Image uploaded successfully!');
+        toast.success('Image loaded successfully!');
+        setUploadingWhyUsImage(null);
       }
-    } catch (error: any) {
-      console.error('Failed to upload image', error);
-      const errMsg = error.response?.data?.error || error.message || 'Failed to upload image';
-      toast.error(errMsg);
-    } finally {
+    };
+    reader.onerror = () => {
+      toast.error('Failed to read image file');
       setUploadingWhyUsImage(null);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleLandingFileUpload = async (section: 'curation' | 'bestSellers' | 'community', index: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1435,31 +1413,24 @@ export default function AdminDashboardPage() {
     if (!file) return;
 
     setUploadingLandingImage({ section, index });
-    const formData = new FormData();
-    formData.append('image', file);
-
-    try {
-      const res = await axios.post(`${API_BASE_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      const newUrl = res.data.url;
-      setLandingPageImages(prev => {
-        const newSection = [...prev[section]];
-        newSection[index] = newUrl;
-        return { ...prev, [section]: newSection };
-      });
-      toast.success('Image uploaded successfully! Remember to click Save Changes.');
-    } catch (error: any) {
-      console.error('Error uploading file', error);
-      const errMsg = error.response?.data?.error || error.message || 'Failed to upload image';
-      toast.error(errMsg);
-    } finally {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      if (ev.target?.result) {
+        const newUrl = ev.target.result as string;
+        setLandingPageImages(prev => {
+          const newSection = [...prev[section]];
+          newSection[index] = newUrl;
+          return { ...prev, [section]: newSection };
+        });
+        toast.success('Image loaded successfully! Remember to click Save Changes.');
+        setUploadingLandingImage(null);
+      }
+    };
+    reader.onerror = () => {
+      toast.error('Failed to read image file');
       setUploadingLandingImage(null);
-    }
+    };
+    reader.readAsDataURL(file);
   };
 
   const syncActivePincodes = (locs: any[]) => {
