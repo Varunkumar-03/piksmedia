@@ -57,12 +57,38 @@ export default function Home() {
   const [showOfferPopup, setShowOfferPopup] = useState(false);
   const [activeOffer, setActiveOffer] = useState<any>(null);
 
+  const defaultLandingImages = {
+    curation: [
+      "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=2000&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1520333789090-1afc82db536a?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop"
+    ],
+    bestSellers: [
+      "https://images.unsplash.com/photo-1544457070-4cd773b4d71e?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1577083165275-c0f5f7eb75bb?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?q=80&w=800&auto=format&fit=crop"
+    ],
+    community: [
+      "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1540518614846-7eded433c457?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=800&auto=format&fit=crop"
+    ]
+  };
+
   useEffect(() => {
     setMounted(true);
     axios.get(`${API_BASE_URL}/settings/landing-page-images`)
       .then(res => {
         if (res.data.data) {
-          setLandingImages(res.data.data);
+          const merged = {
+            curation: defaultLandingImages.curation.map((def, idx) => (res.data.data.curation?.[idx]?.trim() ? res.data.data.curation[idx] : def)),
+            bestSellers: defaultLandingImages.bestSellers.map((def, idx) => (res.data.data.bestSellers?.[idx]?.trim() ? res.data.data.bestSellers[idx] : def)),
+            community: defaultLandingImages.community.map((def, idx) => (res.data.data.community?.[idx]?.trim() ? res.data.data.community[idx] : def))
+          };
+          setLandingImages(merged);
         }
       })
       .catch(console.error);

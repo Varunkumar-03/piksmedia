@@ -121,8 +121,12 @@ export default function ScrollMorphHero() {
         const fetchImages = async () => {
             try {
                 const res = await axios.get(`${API_BASE_URL}/settings/hero-images`);
-                if (res.data.data && Array.isArray(res.data.data) && res.data.data.length === 20) {
-                    setImages(res.data.data);
+                if (res.data.data && Array.isArray(res.data.data)) {
+                    const merged = DEFAULT_IMAGES.map((defImg, idx) => {
+                        const fetched = res.data.data[idx];
+                        return (fetched && fetched.trim()) ? fetched : defImg;
+                    });
+                    setImages(merged);
                 }
             } catch (error) {
                 console.error('Failed to fetch hero images', error);
